@@ -3,6 +3,15 @@
     "description": "Engine for Micro-Framework HLEB",
     "type": "library",
     "homepage": "https://phphleb.ru",
+    "keywords": [
+        "framework",
+        "hleb",
+        "phphleb",
+        "microframework",
+        "micro-framework",
+        "php framework",
+        "php"
+    ],
     "license": "MIT",
     "authors": [
         {
