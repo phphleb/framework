@@ -16,7 +16,7 @@ class MainTemplate
 
         $time = microtime(true) - $time;
 
-        Info::insert("Templates", trim($path, "/") . $backtrace . " load: " . $time);
+        Info::insert("Templates", trim($path, "/") . $backtrace . " load: " . (round($time, 4) * 1000) . " ms");
     }
 
     function hl_debug_backtrace()
