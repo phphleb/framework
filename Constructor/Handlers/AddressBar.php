@@ -4,7 +4,13 @@ namespace Hleb\Constructor\Handlers;
 
 class AddressBar
 {
+    const IDNACONV_PATH = "/idnaconv/idna_convert.class.php";
+
     private $INPUT_PARAMS;
+
+    public $redirect = null;
+
+    public $rel_url = null;
 
     public function __construct($params)
     {
@@ -52,7 +58,9 @@ class AddressBar
 
         if (stripos($val_host, 'xn--') !== false) {
 
-            include($this->INPUT_PARAMS['HLEB_PROJECT_DIRECTORY'] . '/idnaconv/idna_convert.class.php');
+            $idn_path = $this->INPUT_PARAMS['HLEB_PROJECT_DIRECTORY'] . self::IDNACONV_PATH;
+
+            include("$idn_path");
 
             $idn = new idna_convert(array('idn_version' => 2008));
 
@@ -81,8 +89,7 @@ class AddressBar
 
         if (!preg_match($this->INPUT_PARAMS['HLEB_PROJECT_VALIDITY_URL'], $val_address)) {
 
-            header('Location: ' . $rel_protocol . $rel_host_www, true, 301);
-            exit();
+            self::redirect($rel_protocol . $rel_host_www);
         }
 
          //Проверка на корректность URL
@@ -111,7 +118,9 @@ class AddressBar
 
     private function redirect($rel_url){
 
-        header('Location: ' . $rel_url, true, 301);
+        $this->redirect = $rel_url;
+
+        header('Location: ' . $this->redirect, true, 301);
         exit();
 
     }
