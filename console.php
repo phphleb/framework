@@ -393,9 +393,9 @@ function hl_add_bsp($versions)
         for ($i = 0; $i < $origin - $version; $i++) {
             $result[$key] .= " ";
         }
-    }
+}
 
-    return $result;
+return $result;
 
 }
 

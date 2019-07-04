@@ -16,10 +16,9 @@ class AddressBar
     {
         $this->INPUT_PARAMS = $params;
 
-        $this->set();
     }
 
-    private function set(){
+    public function get_state(){
 
         $val_array_address = explode("?", $this->INPUT_PARAMS['SERVER']['REQUEST_URI']);
 
@@ -92,7 +91,7 @@ class AddressBar
             self::redirect($rel_protocol . $rel_host_www);
         }
 
-         //Проверка на корректность URL
+        //Проверка на корректность URL
 
         $rel_host_www = empty($rel_address) ? $rel_host_www . $this->INPUT_PARAMS['HLEB_PROJECT_ENDING_URL'] ? "/" : "" : $rel_host_www;
 
@@ -110,9 +109,11 @@ class AddressBar
 
         if ($rel_url !== $actual_url) {
 
-           self::redirect($rel_url);
+            self::redirect($rel_url);
 
         }
+
+        return $rel_url;
 
     }
 
