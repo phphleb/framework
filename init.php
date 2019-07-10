@@ -83,6 +83,28 @@ if(HLEB_PROJECT_CLASSES_AUTOLOAD) {
     require HLEB_PROJECT_DIRECTORY . "/Main/HomeConnector.php";
 }
 
+require HLEB_PROJECT_DIRECTORY. "/Scheme/App/Controllers/MainController.php";
+
+require HLEB_PROJECT_DIRECTORY. "/Scheme/App/Middleware/MainMiddleware.php";
+
+require HLEB_PROJECT_DIRECTORY. "/Scheme/App/Models/MainModel.php";
+
+
+
+if (file_exists(HLEB_GLOBAL_DIRECTORY . '/routes/nano.php') &&
+    file_exists(HLEB_GLOBAL_DIRECTORY . '/' . HLEB_VENDOR_DIRECTORY . "/phphleb/nanorouter/")) {
+
+    require HLEB_PROJECT_DIRECTORY . "/Constructor/Routes/NanoRoute.php";
+
+    require HLEB_GLOBAL_DIRECTORY . "/app/Optional/shell.php";
+
+    require HLEB_GLOBAL_DIRECTORY . '/' . HLEB_VENDOR_DIRECTORY . "/phphleb/nanorouter/HlebNanoRouter.php";
+
+    include_once HLEB_GLOBAL_DIRECTORY . '/routes/nano.php';
+
+    \NanoRoute::run();
+}
+
 
 // Эти классы загрузятся в любом случае
 
@@ -91,12 +113,6 @@ require HLEB_PROJECT_DIRECTORY . "/Constructor/Routes/MainRoute.php";
 require HLEB_PROJECT_DIRECTORY. "/Scheme/Home/Constructor/Routes/StandardRoute.php";
 
 require HLEB_PROJECT_DIRECTORY. "/Constructor/Routes/Route.php";
-
-require HLEB_PROJECT_DIRECTORY. "/Scheme/App/Controllers/MainController.php";
-
-require HLEB_PROJECT_DIRECTORY. "/Scheme/App/Middleware/MainMiddleware.php";
-
-require HLEB_PROJECT_DIRECTORY. "/Scheme/App/Models/MainModel.php";
 
 require HLEB_PROJECT_DIRECTORY. "/Main/ProjectLoader.php";
 
@@ -141,16 +157,18 @@ spl_autoload_register('hl_main_autoloader', true, true);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+if(!function_exists("hleb_v5ds34hop4nm1d_page_view")) {
 
-function hleb_v5ds34hop4nm1d_page_view($view = null, $data = null)
-{
+    function hleb_v5ds34hop4nm1d_page_view($view = null, $data = null)
+    {
 
-    if (func_num_args() === 0) {
-        return [null, null, "views"];
+        if (func_num_args() === 0) {
+            return [null, null, "views"];
+        }
+
+
+        return [$view, $data, "views"];
     }
-
-
-    return [$view, $data, "views"];
 }
 
 function hleb_gop0m3f4hpe10d_all($view = null, $data = null, $type = "views")
