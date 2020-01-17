@@ -77,7 +77,7 @@ class CachedTemplate
 
     private function searcCacheFile($template)
     {
-        $path = HLEB_GLOBAL_DIRECTORY . '/storage/cache/templates/';
+        $path = HLEB_GLOBAL_DIRECTORY . HLEB_TEMPLATE_CACHED_PATH . '/';
 
         $hash_params = count($this->templateParams) ? $this->acollmd5(json_encode($this->templateParams)) : '';
 
@@ -123,7 +123,7 @@ class CachedTemplate
         } else {
 
             $this->deleteOldFile();
-            mkdir(HLEB_GLOBAL_DIRECTORY . '/storage/cache/templates/' . $this->dir, 0777, true);
+            mkdir(HLEB_GLOBAL_DIRECTORY . HLEB_TEMPLATE_CACHED_PATH . '/' . $this->dir, 0777, true);
             $this->content = $content;                        
             $file = $this-> hashfile . '_' . $this->cacheTime . '.txt';
             file_put_contents($file, $content, LOCK_EX);
@@ -135,7 +135,7 @@ class CachedTemplate
     private function deleteOldFile()
     {
         if (!isset($GLOBALS['HLEB_CACHED_TEMPLATES_CLEARED'])) {
-            $path = HLEB_GLOBAL_DIRECTORY . '/storage/cache/templates';
+            $path = HLEB_GLOBAL_DIRECTORY . HLEB_TEMPLATE_CACHED_PATH;
             $files = glob($path . '/*/*.txt');
             if ($files && count($files)) {
                 foreach ($files as $key => $file) {
