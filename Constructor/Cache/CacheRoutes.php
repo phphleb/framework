@@ -22,18 +22,18 @@ class CacheRoutes
     {
         $this->opt = new LoadRoutes();
 
-        if ($this->opt->comparison()) {
-            $cache = $this->opt->load_cache();
+            if ($this->opt->comparison()) {
+                $cache = $this->opt->load_cache();
 
-            if ($cache === false) {
-                $this->createRoutes();
-                Info::add('CacheRoutes', true);
-                return $this->check($this->opt->update(Route::data()));
+                if ($cache === false) {
+                    $this->createRoutes();
+                    Info::add('CacheRoutes', true);
+                    return $this->check($this->opt->update(Route::data()));
+                }
+
+                Info::add('CacheRoutes', false);
+                return $cache;
             }
-
-            Info::add('CacheRoutes', false);
-            return $cache;
-        }
 
         $this->createRoutes();
         Info::add('CacheRoutes', true);
