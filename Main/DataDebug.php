@@ -19,7 +19,7 @@ class DataDebug
      * @param string $dbname
      */
     public static function add(string $sql, $time, string $dbname, $exec = false)
-    {   
+    {
         if(HLEB_PROJECT_DEBUG && $_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $time_about = $exec ? self::time_about($sql) : '';
@@ -38,7 +38,9 @@ class DataDebug
 
     public static function create_html_part($part, $driver = 'mysql'): string
     {
-        $pattern = $driver == "mysql" ? '/(`[^`]+`)/' : '/`([^`]+)`/';
+        $reverse_quotes = defined('HLEB_DB_DISABLE_REVERSE_QUOTES') && HLEB_DB_DISABLE_REVERSE_QUOTES === true;
+
+        $pattern = $driver !== "mysql" || $reverse_quotes ? '/`([^`]+)`/' : '/(`[^`]+`)/';
 
         return preg_replace($pattern, '<span style="color: #a5432d">$1</span>', $part);
     }
@@ -57,7 +59,7 @@ class DataDebug
             case 'string':
             default:
                 return "<span style='color: #4c8442'>" . htmlentities($param) . "</span>";
-         }
+        }
     }
 
     private static function time_about($sql): string
