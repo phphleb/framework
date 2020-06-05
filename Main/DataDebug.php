@@ -19,7 +19,7 @@ class DataDebug
      * @param string $dbname
      */
     public static function add(string $sql, $time, string $dbname, $exec = false)
-    {
+    {   
         if(HLEB_PROJECT_DEBUG && $_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $time_about = $exec ? self::time_about($sql) : '';
@@ -59,7 +59,7 @@ class DataDebug
             case 'string':
             default:
                 return "<span style='color: #4c8442'>" . htmlentities($param) . "</span>";
-        }
+         }
     }
 
     private static function time_about($sql): string
