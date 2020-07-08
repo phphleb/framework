@@ -6,7 +6,7 @@ namespace Hleb\Constructor\Cache;
 
 use Hleb\Main\Info;
 use Hleb\Constructor\Routes\LoadRoutes;
-use Route;
+use Hleb\Constructor\Routes\Route;
 use Hleb\Main\Errors\ErrorOutput;
 
 class CacheRoutes
@@ -65,7 +65,6 @@ class CacheRoutes
     private function createRoutes()
     {
         print hl_print_fulfillment_inspector(HLEB_LOAD_ROUTES_DIRECTORY , '/main.php');
-
         // Reserved Name
         if(file_exists(HLEB_LOAD_ROUTES_DIRECTORY . '/hlogin/reg.php')){
             print hl_print_fulfillment_inspector(HLEB_LOAD_ROUTES_DIRECTORY , '/hlogin/reg.php');
