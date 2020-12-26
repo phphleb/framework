@@ -14,7 +14,7 @@ class VCreator
 {
     private $hlTemplatePath = '';
 
-    function __construct(string $includePath) {
+    public function __construct(string $includePath) {
         $this->hlTemplatePath = $includePath;
         $data = hleb_to0me1cd6vo7gd_data();
         foreach ($data as $key => $value) {
@@ -34,8 +34,15 @@ class VCreator
     // Display content.
     // Отображение контента.
     public function view() {
-        extract(hleb_to0me1cd6vo7gd_data());
+        extract($this->getData());
         require $this->templatePath();
+    }
+
+    // Getting variables.
+    // Получение переменных.
+    private function getData() {
+        $data = hleb_to0me1cd6vo7gd_data();
+        return is_array($data) ? $data : [];
     }
 }
 
