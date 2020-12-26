@@ -2,19 +2,26 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// End of script execution (before starting the main project).
+if (!function_exists('hl_preliminary_exit')) {
+    function hl_preliminary_exit($text = '') {
+        exit($text);
+    }
+}
+
 if (intval(explode('.', phpversion())[0]) < 7) {
     // End of script execution before starting the framework.
-    exit("The application requires PHP version higher than 7.0 (Current version " . phpversion() . ")");
+    hl_preliminary_exit("The application requires PHP version higher than 7.0 (Current version " . phpversion() . ")");
 }
 
 if (empty($_SERVER['REQUEST_METHOD'])) {
     // End of script execution before starting the framework.
-    exit('Undefined $_SERVER[\'REQUEST_METHOD\']');
+    hl_preliminary_exit('Undefined $_SERVER[\'REQUEST_METHOD\']');
 }
 
 if (empty($_SERVER['HTTP_HOST'])) {
     // End of script execution before starting the framework.
-    exit('Undefined $_SERVER[\'HTTP_HOST\']');
+    hl_preliminary_exit('Undefined $_SERVER[\'HTTP_HOST\']');
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +51,7 @@ function hl_print_fulfillment_inspector(string $firstPartOfPath, string $secondP
     if (!file_exists($fullPath)) {
         $error .= " not found. " . PHP_EOL;
         // End of script execution before starting the framework.
-        exit(!$debug && $log ? error_log($error) : $error);
+        hl_preliminary_exit(!$debug && $log ? error_log($error) : $error);
     }
     ob_start();
     require_once "$fullPath";
@@ -53,7 +60,7 @@ function hl_print_fulfillment_inspector(string $firstPartOfPath, string $secondP
     if ($content !== '') {
         $error .= " is not intended to display content. " . PHP_EOL;
         // End of script execution before starting the framework.
-        exit(!$debug && $log ? error_log($error) : $error);
+        hl_preliminary_exit(!$debug && $log ? error_log($error) : $error);
     }
 }
 $pathToStartFileDir = rtrim(defined('HLEB_SEARCH_START_CONFIG_FILE') ? HLEB_SEARCH_START_CONFIG_FILE : HLEB_GLOBAL_DIRECTORY, '\\/ ');
@@ -61,27 +68,27 @@ hl_print_fulfillment_inspector( $pathToStartFileDir,  '/' . (file_exists($pathTo
 
 if (!defined('HLEB_PROJECT_DEBUG') || !is_bool(HLEB_PROJECT_DEBUG)) {
     // End of script execution before starting the framework.
-    exit("Incorrectly defined setting: ...DEBUG");
+    hl_preliminary_exit("Incorrectly defined setting: ...DEBUG");
 }
 
 if (!defined('HLEB_PROJECT_CLASSES_AUTOLOAD') || !is_bool(HLEB_PROJECT_CLASSES_AUTOLOAD)) {
     // End of script execution before starting the framework.
-    exit("Incorrectly defined setting: ...CLASSES_AUTOLOAD");
+    hl_preliminary_exit("Incorrectly defined setting: ...CLASSES_AUTOLOAD");
 }
 
 if (!defined('HLEB_PROJECT_ENDING_URL') || !is_bool(HLEB_PROJECT_ENDING_URL)) {
     // End of script execution before starting the framework.
-    exit("Incorrectly defined setting: ...ENDING_URL");
+    hl_preliminary_exit("Incorrectly defined setting: ...ENDING_URL");
 }
 
 if (!defined('HLEB_PROJECT_LOG_ON') || !is_bool(HLEB_PROJECT_LOG_ON)) {
     // End of script execution before starting the framework.
-    exit("Incorrectly defined setting: ...LOG_ON");
+    hl_preliminary_exit("Incorrectly defined setting: ...LOG_ON");
 }
 
 if (!defined('HLEB_PROJECT_VALIDITY_URL') || !is_string(HLEB_PROJECT_VALIDITY_URL)) {
     // End of script execution before starting the framework.
-    exit("Incorrectly defined setting: ...VALIDITY_URL");
+    hl_preliminary_exit("Incorrectly defined setting: ...VALIDITY_URL");
 }
 
 
@@ -209,7 +216,7 @@ if ($addressBar->redirect != null) {
     if (!headers_sent()) {
         header('Location: ' . $addressBar->redirect, true, 301);
     }
-    exit();
+    hl_preliminary_exit();
 }
 
 unset($addressBar, $actualProtocol, $address, $pathToStartFileDir);

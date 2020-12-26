@@ -58,19 +58,25 @@ class TCreator
     }
 
     // Output the template.
-    // Вывод шаблона.
+    // Ввывод шаблона.
     public function print() {
         return print $this->hlTemplatePath;
     }
 
     // Return result.
     // Возвращает результат.
-    public function toString() {
+    public function getString() {
         ob_start();
         $this->include();
         $result = ob_get_contents();
         ob_end_clean();
         return $result;
+    }
+
+    // Output the template.
+    // Отображение шаблона.
+    public function __toString() {
+        return strval($this->hlTemplatePath);
     }
 
 }
