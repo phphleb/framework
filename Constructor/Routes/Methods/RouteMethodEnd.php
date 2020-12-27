@@ -13,6 +13,7 @@ namespace Hleb\Constructor\Routes\Methods;
 use Hleb\Scheme\Home\Constructor\Routes\RouteMethodStandard;
 use Hleb\Constructor\Routes\MainRouteMethod;
 use Hleb\Main\Errors\ErrorOutput;
+use Hleb\Scheme\Home\Constructor\Routes\StandardRoute;
 
 class RouteMethodEnd extends MainRouteMethod
 {
@@ -29,9 +30,9 @@ class RouteMethodEnd extends MainRouteMethod
     protected $addresses = [];
 
     /**
-     * @param RouteMethodStandard $instance
+     * @param StandardRoute $instance
      */
-    public function __construct(RouteMethodStandard $instance) {
+    public function __construct(StandardRoute $instance) {
         $this->methodTypeName = "end";
         $this->instance = $instance;
         if ($this->instance instanceof RouteMethodStandard) {
@@ -46,7 +47,7 @@ class RouteMethodEnd extends MainRouteMethod
             ErrorOutput::run();
         }
     }
-    
+
     // Returns the generated data of the current object.
     // Возвращает сформированные данные текущего объекта.
     public function data() {
@@ -77,7 +78,7 @@ class RouteMethodEnd extends MainRouteMethod
         $originBlocks = [];
         $namedBlocks = [];
         $blocks = $this->globalMethodsAdd($blocks);
-        
+
         foreach ($blocks as $key => $block) {
             if ($block['method_type_name'] == "getGroup") {
                 $sampleBlocks[$key] = $block;
