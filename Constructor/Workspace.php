@@ -203,7 +203,7 @@ final class Workspace
             ErrorOutput::get($hlExcludedErrors);
         }
 
-        if (!method_exists($initiator, $method)) {
+        if (!is_callable([$initiator, $method])) {
             $hlExcludedErrors = 'HL048-ROUTE_ERROR: Method `' . $method . '` in class `' . $initiator . '` not exists. ~' .
                 ' Метод  `' . $method . '` для класса `' . $initiator . '` не обнаружен.';
             ErrorOutput::get($hlExcludedErrors);
@@ -260,7 +260,7 @@ final class Workspace
             }
         }
 
-        if (!method_exists($initiator, $method)) {
+        if (!is_callable([$initiator, $method])) {
             if (!$searchTags) {
                 $hlExcludedErrors = 'HL042-ROUTE_ERROR: Method `' . $method . '` in class `' . $initiator . '` not exists. ~' .
                     ' Метод  `' . $method . '` для класса `' . $initiator . '` не обнаружен.';
@@ -300,7 +300,7 @@ final class Workspace
             return null;
         }
 
-        if (!method_exists($initiator, $method)) {
+        if (!is_callable([$initiator, $method])) {
             $hlExcludedErrors = 'HL049-ROUTE_ERROR: Method `' . $method . '` in class `' . $initiator . '` not exists. ~' .
                 ' Метод  `' . $method . '` для класса `' . $initiator . '` не обнаружен.';
             ErrorOutput::get($hlExcludedErrors);
@@ -333,7 +333,8 @@ final class Workspace
             if($key === $methodName) {
                 $fullTarget = str_replace('<' . $key . '>', strval($value), $fullTarget);
             } else {
-                $fullTarget = str_replace('<' . $key . '>', $this->reformatValue(strval($value)), $fullTarget);
+                $reformatValue = $this->reformatValue(strval($value));
+                $fullTarget = $reformatValue !== false ? str_replace('<' . $key . '>', $reformatValue, $fullTarget) : '@';
             }
         }
         $fullTargetList = explode('@', $fullTarget);
@@ -354,6 +355,9 @@ final class Workspace
         $parts = explode('-', $value);
         $result = '';
         foreach($parts as $part) {
+            if($part == '') {
+                return false;
+            }
             $result .= ucfirst($part);
         }
         return $result;
