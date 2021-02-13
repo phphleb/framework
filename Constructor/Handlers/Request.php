@@ -20,7 +20,13 @@ final class Request extends BaseSingleton
 
     private static $request = [];
 
-    private static $close = false;
+    private static $post = null;
+
+    private static $get = null;
+
+    private static $req = null;
+
+    private static $cookie = null;
 
     private static $head = null;
 
@@ -59,7 +65,8 @@ final class Request extends BaseSingleton
      * @return mixed|null
      */
     public static function getCookie($name = null) {
-        return is_null($name) ? self::clearData($_COOKIE ?? []) : (isset($_COOKIE) && isset($_COOKIE[$name]) ? self::clearData($_COOKIE[$name]) : null);
+        if (is_null(self::$cookie)) self::$cookie = self::getCookieData();
+        return is_null($name) ? self::$cookie : (isset($_COOKIE) && isset(self::$cookie[$name]) ? self::$cookie[$name] : null);
     }
 
     /**
@@ -560,19 +567,29 @@ final class Request extends BaseSingleton
     // Returns $_POST data.
     // Возвращает данные $_POST.
     private static function getPostData() {
-        return self::clearData($_POST ?? []);
+        if(is_null(self::$post)) self::$post = self::clearData($_POST ?? []);
+        return self::$post;
     }
 
     // Returns $_GET data.
     // Возвращает данные $_GET.
     private static function getGetData() {
-        return self::clearData($_GET ?? []);
+        if(is_null(self::$get)) self::$get = self::clearData($_GET ?? []);
+        return self::$get;
     }
 
     // Returns $_REQUEST data.
     // Возвращает данные $_REQUEST.
     private static function getRequestData() {
-        return self::clearData($_REQUEST ?? []);
+        if(is_null(self::$req)) self::$req = self::clearData($_REQUEST ?? []);
+        return self::$req;
+    }
+
+    // Returns $_COOKIE data.
+    // Возвращает данные $_COOKIE.
+    private static function getCookieData() {
+        if(is_null(self::$cookie)) self::$cookie = self::clearData($_COOKIE ?? []);
+        return self::$cookie;
     }
 
     // Determines the type of the value and clears tags from it or nested data. Returns a cleared value.
@@ -634,7 +651,6 @@ final class Request extends BaseSingleton
             $serverLang = strtolower($serverLang);
             return $serverLang;
         }
-
         return false;
     }
 
