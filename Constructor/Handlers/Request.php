@@ -46,7 +46,8 @@ final class Request extends BaseSingleton
      * Returns the current session data of $_SESSION.
      * @param mixed|null $name - parameter to get data by name.
      * @return mixed|null
-     *//**
+     */
+    /**
      * Возвращает текущие данные сессии $_SESSION.
      * @param mixed|null $name - параметр для получения данных по названию.
      * @return mixed|null
@@ -59,7 +60,8 @@ final class Request extends BaseSingleton
      * Returns the current session data of $_COOKIE.
      * @param mixed|null $name - parameter to get data by name.
      * @return mixed|null
-     *//**
+     */
+    /**
      * Возвращает текущие данные сессии $_COOKIE.
      * @param mixed|null $name - параметр для получения данных по названию.
      * @return mixed|null
@@ -73,7 +75,8 @@ final class Request extends BaseSingleton
      * Returns data from the current route.
      * @param string|null $name - parameter to get data by name.
      * @return mixed|null
-     *//**
+     */
+    /**
      * Возвращает данные из текущего роута.
      * @param string|null $name - параметр для получения данных по названию.
      * @return mixed|null
@@ -87,7 +90,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|string $default - default value for empty or undetected values.
      * @return null|string
-     *//**
+     */
+    /**
      * Возвращает значение из текущего роута с преобразованием в строковое значение.
      * @param string $name - название необходимого значения.
      * @param null|string $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -102,7 +106,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|string $default - default value for empty or undetected values.
      * @return null|string
-     *//**
+     */
+    /**
      * Возвращает значение из текущего роута с преобразованием в целочисленное значение.
      * @param string $name - название необходимого значения.
      * @param null|integer $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -117,7 +122,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|float $default - default value for empty or undetected values.
      * @return null|float
-     *//**
+     */
+    /**
      * Возвращает значение из текущего роута  с преобразованием в число с плавающей запятой.
      * @param string $name - название необходимого значения.
      * @param null|float $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -130,7 +136,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the request method. For example, 'GET', 'HEAD', 'POST', 'PUT'
      * @return string
-     *//**
+     */
+    /**
      * Возвращает метод запроса. Например: 'GET', 'HEAD', 'POST', 'PUT'
      * @return string
      */
@@ -141,7 +148,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the current request protocol 'http' or 'https'
      * @return string
-     *//**
+     */
+    /**
      * Возвращает текущий протокол запроса 'http' или 'https'
      * @return string
      */
@@ -152,7 +160,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the complete current request protocol 'http://' or 'https://'
      * @return string
-     *//**
+     */
+    /**
      * Возвращает полный текущий протокол запроса 'http://' или 'https://'
      * @return string
      */
@@ -163,7 +172,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the full host with an http-prefix of the form 'https://site.com'
      * @return string
-     *//**
+     */
+    /**
      * Возвращает полный хост с http-префиксом вида 'https://site.com'
      * @return string
      */
@@ -174,7 +184,8 @@ final class Request extends BaseSingleton
     /**
      * Trying to find the localization value
      * @return string|false
-     *//**
+     */
+    /**
      * Попытка найти значение локализации
      * @return string|false
      */
@@ -188,7 +199,8 @@ final class Request extends BaseSingleton
     /**
      * The address that was provided to access this page. For example '/index.php?p=example'
      * @return null|string
-     *//**
+     */
+    /**
      * Адрес, который был предоставлен для доступа к этой странице. Например '/index.php?p=example'
      * @return null|string
      */
@@ -200,7 +212,8 @@ final class Request extends BaseSingleton
     /**
      * The full URL of the current request, of the form 'http://site.com/index.php?p=example'
      * @return null|string
-     *//**
+     */
+    /**
      * Полный URL-адрес текущего запроса, вида 'http://site.com/index.php?p=example'
      * @return null|string
      */
@@ -212,7 +225,8 @@ final class Request extends BaseSingleton
     /**
      * The transmitted address of the page from which the user made the transition.
      * @return array|string|string[]|null
-     *//**
+     */
+    /**
      * Переданный адрес страницы, c которой пользователь совершил переход.
      * @return array|string|string[]|null
      */
@@ -224,7 +238,8 @@ final class Request extends BaseSingleton
     /**
      * Returns current domain.
      * @return string
-     *//**
+     */
+    /**
      * Возвращает текущий домен.
      * @return string
      */
@@ -235,7 +250,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the content of the `Host` header.
      * @return string
-     *//**
+     */
+    /**
      * Возвращает содержимое заголовка `Host`.
      * @return string
      */
@@ -246,12 +262,13 @@ final class Request extends BaseSingleton
     /**
      * Get the port of the current connection from the host.
      * @return string|null
-     *//**
+     */
+    /**
      * Получить порт текущего соединения из хоста.
      * @return string|null
      */
     public static function getPort() {
-        $hostParts =  explode(':', self::getHost());
+        $hostParts = explode(':', self::getHost());
         return count($hostParts) === 2 ? end($hostParts) : null;
     }
 
@@ -259,7 +276,8 @@ final class Request extends BaseSingleton
      * Returns the information array $_SERVER created by the web server, or the requested value from it.
      * @param null|string $value - parameter to get data by name.
      * @return null|array
-     *//**
+     */
+    /**
      * Возвращает массив с информацией $_SERVER, созданный веб-сервером, или запрошенное значение из него.
      * @param null|string $value - параметр для получения данных по названию.
      * @return null|mixed|array
@@ -271,7 +289,8 @@ final class Request extends BaseSingleton
     /**
      * Determines if a request is requested as ajax
      * @return bool
-     *//**
+     */
+    /**
      * Определяет, запрошен ли запрос как ajax
      * @return bool
      */
@@ -282,7 +301,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the array with data for the downloaded file.
      * @return null|mixed
-     *//**
+     */
+    /**
      * Возвращает массив с данными для загруженного файла.
      * @return null|mixed
      */
@@ -293,7 +313,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the part of the URL request after the script is executed.
      * @return mixed|string
-     *//**
+     */
+    /**
      * Возвращает часть URL-запроса после выполняемого сценария.
      * @return mixed|string
      */
@@ -304,7 +325,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the IP address of the client or IP of the last proxy server through which the client got to the site.
      * @return null|string
-     *//**
+     */
+    /**
      * Возвращает IP-адрес клиента или IP последнего прокси-сервера, через который клиент попал на сайт.
      * @return null|string
      */
@@ -316,7 +338,8 @@ final class Request extends BaseSingleton
      * Returns an array or a single value of $_GET.
      * @param null|string $value - parameter to get data by name.
      * @return mixed|null
-     *//**
+     */
+    /**
      * Возвращает массив или отдельное значение $_GET.
      * @param null|string $value - параметр для получения данных по названию.
      * @return mixed|null
@@ -330,7 +353,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|string $default - default value for empty or undetected values.
      * @return null|string
-     *//**
+     */
+    /**
      * Возвращает значение из $_GET с преобразованием в строковое значение.
      * @param string $name - название необходимого значения.
      * @param null|string $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -345,7 +369,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|integer $default - default value for empty or undetected values.
      * @return null|integer
-     *//**
+     */
+    /**
      * Возвращает значение из $_GET с преобразованием в целочисленное значение.
      * @param string $name - название необходимого значения.
      * @param null|integer $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -360,7 +385,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|float $default - default value for empty or undetected values.
      * @return null|float
-     *//**
+     */
+    /**
      * Возвращает значение из $_GET с преобразованием в число с плавающей запятой.
      * @param string $name - название необходимого значения.
      * @param null|float $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -374,7 +400,8 @@ final class Request extends BaseSingleton
      * Returns an array or a single value of $_POST.
      * @param null|string $value - parameter to get data by name.
      * @return mixed|null
-     *//**
+     */
+    /**
      * Возвращает массив или отдельное значение $_POST.
      * @param null|string $value - параметр для получения данных по названию.
      * @return mixed|null
@@ -388,7 +415,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|string $default - default value for empty or undetected values.
      * @return null|string
-     *//**
+     */
+    /**
      * Возвращает значение из $_POST с преобразованием в строковое значение.
      * @param string $name - название необходимого значения.
      * @param null|string $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -403,7 +431,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|integer $default - default value for empty or undetected values.
      * @return null|integer
-     *//**
+     */
+    /**
      * Возвращает значение из $_POST с преобразованием в целочисленное значение.
      * @param string $name - название необходимого значения.
      * @param null|integer $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -418,7 +447,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|float $default - default value for empty or undetected values.
      * @return null|float
-     *//**
+     */
+    /**
      * Возвращает значение из $_POST с преобразованием в число с плавающей запятой.
      * @param string $name - название необходимого значения.
      * @param null|float $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -432,7 +462,8 @@ final class Request extends BaseSingleton
      * Returns an array or a single value of $_REQUEST.
      * @param null|string $value - parameter to get data by name.
      * @return mixed|null
-     *//**
+     */
+    /**
      * Возвращает массив или отдельное значение $_REQUEST.
      * @param null|string $value - параметр для получения данных по названию.
      * @return mixed|null
@@ -446,7 +477,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|string $default - default value for empty or undetected values.
      * @return null|string
-     *//**
+     */
+    /**
      * Возвращает значение из $_REQUEST с преобразованием в строковое значение.
      * @param string $name - название необходимого значения.
      * @param null|string $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -461,7 +493,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|integer $default - default value for empty or undetected values.
      * @return null|integer
-     *//**
+     */
+    /**
      * Возвращает значение из $_REQUEST с преобразованием в целочисленное значение.
      * @param string $name - название необходимого значения.
      * @param null|integer $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -476,7 +509,8 @@ final class Request extends BaseSingleton
      * @param string $name - name of the requested value.
      * @param null|float $default - default value for empty or undetected values.
      * @return null|float
-     *//**
+     */
+    /**
      * Возвращает значение из $_REQUEST с преобразованием в число с плавающей запятой.
      * @param string $name - название необходимого значения.
      * @param null|float $default - дефолтное значение для пустых или необнаруженнных значений.
@@ -490,7 +524,8 @@ final class Request extends BaseSingleton
      * Returns the original string with stripped tags.
      * @param string $value - line to clean up.
      * @return string
-     *//**
+     */
+    /**
      * Возвращает исходную строку с очищенными тегами.
      * @param string $value - строка для очистки.
      * @return string
@@ -502,7 +537,8 @@ final class Request extends BaseSingleton
     /**
      * Returns an object for placing headers, styles and scripts in the <head>...</head> of the page.
      * @return Head|null
-     *//**
+     */
+    /**
      * Возвращает объект для размещения заголовков, стилей и скриптов в <head>...</head> страницы.
      * @return Head|null
      */
@@ -514,7 +550,8 @@ final class Request extends BaseSingleton
     /**
      * Returns an object for placing loaded resources at the bottom of the page.
      * @return Resources|null
-     *//**
+     */
+    /**
      * Возвращает объект для размещения подгружаемых ресурсов в нижней части страницы.
      * @return Resources|null
      */
@@ -526,7 +563,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the relative current URL, similar to getMainUrl()
      * @return string|null
-     *//**
+     */
+    /**
      * Возвращает относительный текущий URL, аналогично функции getMainUrl()
      * @return string|null
      */
@@ -538,7 +576,8 @@ final class Request extends BaseSingleton
     /**
      * Returns the relative current URL without GET parameters.
      * @return string
-     *//**
+     */
+    /**
      * Возвращает относительный текущий URL без GET-параметров.
      * @return string
      */
@@ -555,7 +594,7 @@ final class Request extends BaseSingleton
     // Adds a parameter by name and value.
     // Добавляет параметр по имени и значению.
     public static function add(string $name, string $value) {
-       self::$request[$name] = is_numeric($value) ? floatval($value) : self::clearData($value);
+        self::$request[$name] = is_numeric($value) ? floatval($value) : self::clearData($value);
     }
 
     // URL conversion.
@@ -567,28 +606,28 @@ final class Request extends BaseSingleton
     // Returns $_POST data.
     // Возвращает данные $_POST.
     private static function getPostData() {
-        if(is_null(self::$post)) self::$post = self::clearData($_POST ?? []);
+        if (is_null(self::$post)) self::$post = self::clearData($_POST ?? []);
         return self::$post;
     }
 
     // Returns $_GET data.
     // Возвращает данные $_GET.
     private static function getGetData() {
-        if(is_null(self::$get)) self::$get = self::clearData($_GET ?? []);
+        if (is_null(self::$get)) self::$get = self::clearData($_GET ?? []);
         return self::$get;
     }
 
     // Returns $_REQUEST data.
     // Возвращает данные $_REQUEST.
     private static function getRequestData() {
-        if(is_null(self::$req)) self::$req = self::clearData($_REQUEST ?? []);
+        if (is_null(self::$req)) self::$req = self::clearData($_REQUEST ?? []);
         return self::$req;
     }
 
     // Returns $_COOKIE data.
     // Возвращает данные $_COOKIE.
     private static function getCookieData() {
-        if(is_null(self::$cookie)) self::$cookie = self::clearData($_COOKIE ?? []);
+        if (is_null(self::$cookie)) self::$cookie = self::clearData($_COOKIE ?? []);
         return self::$cookie;
     }
 
@@ -658,11 +697,14 @@ final class Request extends BaseSingleton
     // Возвращает стандартизированное значение
     private static function getData($name = null, $default = '', $function = '', array $list = null) {
         $data = is_null($list) ? self::$request : $list;
-        if($name) {
+        if ($name) {
             $value = isset($data[$name]) ? $data[$name] : null;
-            if(!is_null($value)) {
-                $value = $function ? $function($value) : $value;
-                if(!empty($value)) {
+            if (!is_numeric($value) && in_array($function, ['intval', 'floatval'])) {
+                return $default;
+            }
+            if (!is_null($value)) {
+                $value = $function && $value !== '' ? $function($value) : $value;
+                if (!empty($value) || (is_numeric($value) && $value == 0)) {
                     return $value;
                 }
             }
