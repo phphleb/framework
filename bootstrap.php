@@ -147,7 +147,7 @@ function hleb_dc64d27da09bab7_storage_directory() {
 
 if (!function_exists('hleb_system_log')) {
     function hleb_system_log($message) {
-        error_log($message);
+      error_log($message);
     }
 }
 
