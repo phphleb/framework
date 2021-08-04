@@ -290,7 +290,7 @@ final class Request extends BaseSingleton
      * @return bool
      */
     public static function isXmlHttpRequest() {
-        return $_SERVER['X_REQUESTED_WITH'] == 'XMLHttpRequest';
+        return $_SERVER['HTTP-X-REQUESTED-WITH'] == 'XMLHttpRequest';
     }
 
     /**
