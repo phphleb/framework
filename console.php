@@ -209,10 +209,10 @@ function hlUploadAll() {
 }
 
 function hlCreateUsersTask($path, $class, $arg) {
-    $task =  hlCreateTaskClass($path, $class);
-    if($task) {
-        $task->createTask($arg);
-    }
+   $task =  hlCreateTaskClass($path, $class);
+   if($task) {
+       $task->createTask($arg);
+   }
 }
 
 function hlCreateTaskClass($path, $class) {
@@ -241,7 +241,7 @@ function hlShowCommandHelp($path, $class) {
                 print $comment . PHP_EOL;
             }
         } catch (Throwable $e) {
-            print '#' . $e->getMessage();
+           print '#' . $e->getMessage();
         }
     }
 
