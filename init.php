@@ -1,6 +1,6 @@
 <?php
 
-define('HLEB_PROJECT_FULL_VERSION', '1.5.65');
+define('HLEB_PROJECT_FULL_VERSION', '1.5.70');
 
 require HLEB_PROJECT_DIRECTORY . '/Scheme/App/Controllers/MainController.php';
 
@@ -57,7 +57,7 @@ if (HL_TWIG_CONNECTED) {
 
     if (!defined('HL_TWIG_AUTO_RELOAD')) {
         //Recompilation of Twig templates
-        define('HL_TWIG_AUTO_RELOAD', HLEB_PROJECT_DEBUG_ON);
+        define('HL_TWIG_AUTO_RELOAD', HLEB_PROJECT_DEBUG);
     }
 
     if (!defined('HL_TWIG_STRICT_VARIABLES')) {

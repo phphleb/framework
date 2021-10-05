@@ -72,8 +72,10 @@ if ($arguments) {
         case '-routes-cc':
             if (file_exists(HLEB_STORAGE_CACHE_ROUTES_DIRECTORY . '/routes.txt')) {
                 unlink(HLEB_STORAGE_CACHE_ROUTES_DIRECTORY . '/routes.txt');
-                echo PHP_EOL . 'Route cache cleared.';
+                echo PHP_EOL . ' Deleted one file.';
             }
+            echo PHP_EOL . ' Route cache cleared.';
+            echo PHP_EOL;
             break;
         case '--clear-cache':
         case '-cc':
@@ -140,13 +142,12 @@ if ($arguments) {
             break;
         default:
             $file = $fn->convertCommandToTask($arguments);
-
             if (file_exists(HLEB_GLOBAL_DIRECTORY . "/app/Commands/$file.php")) {
                 hlUploadAll();
                 if (end($argv) === '--help') {
-                    hlShowCommandHelp(HLEB_GLOBAL_DIRECTORY, $file, $fn);
+                    hlShowCommandHelp(HLEB_GLOBAL_DIRECTORY, $file);
                 } else {
-                    hlCreateUsersTask(HLEB_GLOBAL_DIRECTORY, $file, $setArguments, $fn);
+                    hlCreateUsersTask(HLEB_GLOBAL_DIRECTORY, $file, $setArguments);
                 }
 
             } else {
@@ -207,34 +208,30 @@ function hlUploadAll() {
     if (HLEB_PROJECT_CLASSES_AUTOLOAD) spl_autoload_register('hl_main_autoloader', true, true);
 }
 
-function hlCreateUsersTask($path, $class, $arg, Hleb\Main\Console\MainConsole $fn) {
-   $task =  hlCreateTaskClass($path, $class, $fn);
+function hlCreateUsersTask($path, $class, $arg) {
+   $task =  hlCreateTaskClass($path, $class);
    if($task) {
        $task->createTask($arg);
    }
 }
 
-function hlCreateTaskClass($path, $class, Hleb\Main\Console\MainConsole $fn) {
+function hlCreateTaskClass($path, $class) {
     $realPath = $path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Commands' . DIRECTORY_SEPARATOR . $class . ".php";
     include_once "$realPath";
+    $namespace = str_replace('/', '\\', trim($class, '\\/ '));
 
-    $searchNames = $fn->searchOnceNamespace($realPath, $path . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Commands');
-    if ($searchNames) {
-        foreach ($searchNames as $search_name) {
-            if (class_exists('App\Commands\\' . $search_name)) {
-                $className = 'App\Commands\\' . $search_name;
-               return new $className();
-            }
-        }
+    if (class_exists('App\Commands\\' . $namespace)) {
+        $className = 'App\Commands\\' . $namespace;
+        return new $className();
     }
     return null;
 }
 
 
 
-function hlShowCommandHelp($path, $class, Hleb\Main\Console\MainConsole $fn) {
+function hlShowCommandHelp($path, $class) {
     /** @var object|null $task */
-    $task = hlCreateTaskClass($path, $class, $fn);
+    $task = hlCreateTaskClass($path, $class);
     if (!is_null($task)) {
         print PHP_EOL . 'DESCRIPTION: ' .  $task::DESCRIPTION . PHP_EOL . PHP_EOL;
         try {
@@ -264,7 +261,10 @@ function hlShowCommandHelp($path, $class, Hleb\Main\Console\MainConsole $fn) {
 
 
 function hlGetFrameVersion() {
-    return hlSearchVersion(HLEB_PUBLIC_DIR . '/index.php', 'HLEB_FRAME_VERSION');
+    if(file_exists(HLEB_PUBLIC_DIR . '/index.php')) {
+        return hlSearchVersion(HLEB_PUBLIC_DIR . '/index.php', 'HLEB_FRAME_VERSION');
+    }
+    return '-';
 }
 
 function hlGetFrameworkVersion() {
