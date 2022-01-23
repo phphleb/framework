@@ -44,7 +44,7 @@ final class MainDB
             \Hleb\Main\DataDebug::add($sql, $time, self::setConfigKey($config), true);
         }
         if(defined('HLEB_DB_LOG_ENABLED') && HLEB_DB_LOG_ENABLED) {
-            hleb_system_log('[DB LOG ' . round($time, 4) . ' sec] ' . $sql . ';');
+           hleb_system_log('[DB LOG ' . round($time, 4) . ' sec] ' . $sql . ';');
         }
 
         return $stmt;
@@ -66,7 +66,7 @@ final class MainDB
         $param = HLEB_PARAMETERS_FOR_DB[$config];
         $opt = $param["options-list"] ?? [];
         $opt[\PDO::ATTR_ERRMODE] = $param["errmode"] ?? \PDO::ERRMODE_EXCEPTION;
-        $opt[\PDO::ATTR_DEFAULT_FETCH_MODE] = $param["default-mode"] ?? $param["default_fetch_mode"] ?? \PDO::FETCH_ASSOC;
+        $opt[\PDO::ATTR_DEFAULT_FETCH_MODE] = $param["default_fetch_mode"] ?? \PDO::FETCH_ASSOC;
         $opt[\PDO::ATTR_EMULATE_PREPARES] = $param["emulate-prepares"] ?? $param["emulate_prepares"] ?? false;
 
         $user = $param["user"] ?? '';
@@ -78,8 +78,8 @@ final class MainDB
                 $condition [] = preg_replace('/\s+/', '', $prm);
             }
         }
-        $connection = implode(";", $condition);
-        self::$connectionList[$config] = new \PDO($connection, $user, $pass, $opt);
+        self::$connectionList[$config] = new \PDO(implode(";", $condition), $user, $pass, $opt);
+
         return self::$connectionList[$config];
     }
 

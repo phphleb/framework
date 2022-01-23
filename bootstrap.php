@@ -158,7 +158,7 @@ if (!function_exists('hleb_system_log')) {
      * @internal
      */
     function hleb_system_log($message) {
-        error_log($message);
+      error_log($message);
     }
 }
 
