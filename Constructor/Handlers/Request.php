@@ -536,16 +536,18 @@ final class Request extends BaseSingleton
 
     /**
      * Returns request body, does not work with `multipart/form-data`.
-     * @return false|string
+     * @return string
      *//**
      * Возвращает тело запроса, не работает с `multipart/form-data`.
-     * @return false|string
+     * @return string
      */
     public static function getInputBody() {
         if (!is_null(self::$inputBody)) {
             return self::$inputBody;
         }
-        return  self::$inputBody = file_get_contents('php://input');
+        $inputData =  (string)file_get_contents('php://input');
+
+        return self::$inputBody = $inputData ? self::convertPrivateTags($inputData) : $inputData;
     }
 
     /**
@@ -556,7 +558,7 @@ final class Request extends BaseSingleton
      * @return array|false
      */
     public static function getJsonBodyList() {
-        $body = (string)self::getInputBody();
+        $body = self::getInputBody();
         if (!$body) {
             return false;
         }
