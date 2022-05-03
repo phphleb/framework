@@ -1,6 +1,6 @@
 <?php
 
-define('HLEB_PROJECT_FULL_VERSION', '1.6.53');
+define('HLEB_PROJECT_FULL_VERSION', '1.6.60');
 
 require HLEB_PROJECT_DIRECTORY . '/Scheme/App/Controllers/MainController.php';
 
@@ -135,7 +135,7 @@ function hleb_render($render, $data = null) {
 function hleb_search_filenames($dir) {
     $handle = opendir($dir);
     if(!$handle) {
-        error_log("Can't open directory $dir");
+        hleb_system_log("Can't open directory $dir");
         return false;
     }
 
@@ -325,6 +325,14 @@ function hleb_public_path() {
  */
 function hleb_view_path() {
     return HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'view';
+}
+
+/**
+ * @return string
+ * @internal
+ */
+function hleb_project_path() {
+    return HLEB_GLOBAL_DIRECTORY;
 }
 
 /**
