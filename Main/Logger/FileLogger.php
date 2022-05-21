@@ -79,7 +79,7 @@ class FileLogger implements LoggerInterface
      */
     public function log($level, string $message, array $context = [])
     {
-        $this->saveFile($this->createLog($level, $message, $context));
+       $this->saveFile($this->createLog($level, $message, $context));
     }
 
     private function createLog(string $level, string $message, array $context) {
@@ -115,14 +115,14 @@ class FileLogger implements LoggerInterface
             return false;
         }
         if (Request::isConsoleMode()) {
-            return file_put_contents(HLEB_STORAGE_DIRECTORY . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . date('Y_m_d_') . 'errors.system.log', $row . PHP_EOL, FILE_APPEND);
+           return file_put_contents(HLEB_STORAGE_DIRECTORY . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . date('Y_m_d_') . 'errors.system.log', $row . PHP_EOL, FILE_APPEND);
         }
         $prefix = defined('HLEB_PROJECT_LOG_SORT_BY_DOMAIN') && HLEB_PROJECT_LOG_SORT_BY_DOMAIN ?
             str_replace(['\\', '//', '@', '<', '>'], '',
                 str_replace('127.0.0.1', 'localhost' ,
                     str_replace( '.', '_',
                         explode(':', $_SERVER['HTTP_HOST'])[0]
-                    )
+                )
                 )
             ) . '_' : '';
         return  file_put_contents(HLEB_STORAGE_DIRECTORY . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . date('Y_m_d_') . $prefix . 'errors.log', $row . PHP_EOL, FILE_APPEND);
