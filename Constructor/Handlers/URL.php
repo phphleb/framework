@@ -71,7 +71,6 @@ final class URL extends BaseSingleton
             $isTag = $part && $part[0] == '@' && $part[1] == '{';
             if ($isTag) {
                 $addressParts[$key] = ltrim($part, '@');
-                continue;
              }
             if ($part && strlen($part) > 2 && ($part[0] == '{')) {
                 if (count($params)) {
