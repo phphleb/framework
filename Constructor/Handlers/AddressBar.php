@@ -44,7 +44,7 @@ final class AddressBar
         $fileUrl = stripos(end($endElement), '.') !== false;
         $relAddress = "";
         if (!empty($address)) {
-            if (!$fileUrl) {
+            if (!$fileUrl && in_array(strtolower($this->inputParameters['SERVER']['REQUEST_METHOD']), $this->inputParameters['HLEB_ENDING_URL_INCLUDING_METHODS'])) {
                 if ($address[strlen($address) - 1] === '/') {
                     $relAddress = $this->inputParameters['HLEB_PROJECT_ENDING_URL'] ? $address : rtrim($address, "/");
                 } else {
@@ -77,7 +77,7 @@ final class AddressBar
 
         // Check if the address is valid.
         // Проверка на валидность адреса.
-        if ($address && $address !== '/' && !preg_match($this->inputParameters['HLEB_PROJECT_VALIDITY_URL'], $address)) {
+        if (!preg_match($this->inputParameters['HLEB_PROJECT_VALIDITY_URL'], $address)) {
             $realUrlMain = $realProtocol . $realHostWww;
             $this->redirect($realUrlMain);
             return $realUrlMain;
