@@ -36,6 +36,7 @@ class RouteMethodEnd extends MainRouteMethod
         $this->result = $this->instance->data();
         $this->result = self::createGroups();
         $this->checkController();
+        $this->updateFallback();
         $this->result["render"] = $this->render;
         $this->result["addresses"] = $this->addresses;
         $this->result["update"] = date("r") . " / " . rand();
@@ -43,7 +44,7 @@ class RouteMethodEnd extends MainRouteMethod
         $this->result["multiple"] = self::searchMultiple();
         ErrorOutput::run();
     }
-    
+
     // Returns the generated data of the current object.
     // Возвращает сформированные данные текущего объекта.
     public function data() {
@@ -79,6 +80,22 @@ class RouteMethodEnd extends MainRouteMethod
         return false;
     }
 
+    // Finding and implementing fallback at the end.
+    // Поиск и внедрениее fallback в конец.
+    private function updateFallback() {
+        $blocks = $this->result;
+        foreach ($blocks as $key => $block) {
+            if (isset($block["data_path"])) {
+                if ($block["data_path"] === '*') {
+                    unset($this->result[$key]);
+                    $this->result[] = $block;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Parse blocks nested in groups.
     // Разбор вложенных в группы блоков.
     private function createGroups() {
@@ -88,7 +105,7 @@ class RouteMethodEnd extends MainRouteMethod
         $originBlocks = [];
         $namedBlocks = [];
         $blocks = $this->globalMethodsAdd($blocks);
-        
+
         foreach ($blocks as $key => $block) {
             if ($block['method_type_name'] == "getGroup") {
                 $sampleBlocks[$key] = $block;

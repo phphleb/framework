@@ -15,7 +15,7 @@ use Hleb\Main\Helpers\RangeChecker;
 /**
  * @package Hleb\Constructor\Handlers
  * @internal
-*/
+ */
 final class URLHandler
 {
     // Parse the array with routes.
@@ -153,7 +153,7 @@ final class URLHandler
     private function matchSearchAllPath(array &$blocks, string $resultUrl, array $adminPanData = [], bool $multiple = false) {
         $resultUrlParts = array_reverse(explode('/', trim($resultUrl, ' \\/')));
         $url = $this->trimEndSlash($resultUrl);
-        $fallback = null;
+
         foreach ($blocks as $key => &$block) {
             $result = $this->matchSearchPath($block, $url, $resultUrlParts, $multiple);
             if ($result !== false) {
