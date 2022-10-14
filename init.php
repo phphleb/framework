@@ -1,6 +1,6 @@
 <?php
 
-define('HLEB_PROJECT_FULL_VERSION', '1.6.75');
+define('HLEB_PROJECT_FULL_VERSION', '1.6.76');
 
 require HLEB_PROJECT_DIRECTORY . '/Scheme/App/Controllers/MainController.php';
 
@@ -327,7 +327,7 @@ function hleb_public_path() {
  * @internal
  */
 function hleb_view_path() {
-    return HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'view';
+    return HLEB_GLOBAL_DIRECTORY . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'views';
 }
 
 /**

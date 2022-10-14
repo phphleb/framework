@@ -44,7 +44,7 @@ class RouteMethodEnd extends MainRouteMethod
         $this->result["multiple"] = self::searchMultiple();
         ErrorOutput::run();
     }
-
+    
     // Returns the generated data of the current object.
     // Возвращает сформированные данные текущего объекта.
     public function data() {
@@ -105,7 +105,7 @@ class RouteMethodEnd extends MainRouteMethod
         $originBlocks = [];
         $namedBlocks = [];
         $blocks = $this->globalMethodsAdd($blocks);
-
+        
         foreach ($blocks as $key => $block) {
             if ($block['method_type_name'] == "getGroup") {
                 $sampleBlocks[$key] = $block;

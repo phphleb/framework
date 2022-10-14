@@ -15,7 +15,7 @@ use Hleb\Main\Helpers\RangeChecker;
 /**
  * @package Hleb\Constructor\Handlers
  * @internal
- */
+*/
 final class URLHandler
 {
     // Parse the array with routes.
