@@ -16,9 +16,9 @@ namespace Hleb\Constructor\Routes;
 use Hleb\Scheme\Home\Constructor\Routes\{
     StandardRoute
 };
-use Hleb\Constructor\Routes\Methods\{
-    RouteMethodAdd,
+use Hleb\Constructor\Routes\Methods\{RouteMethodAdd,
     RouteMethodAny,
+    RouteMethodBottleneck,
     RouteMethodDelete,
     RouteMethodFallback,
     RouteMethodGet,
@@ -44,8 +44,7 @@ use Hleb\Constructor\Routes\Methods\{
     RouteMethodRenderMap,
     RouteMethodDomain,
     RouteMethodAdminPanController,
-    RouteMethodModule
-};
+    RouteMethodModule};
 
 final class Route extends MainRoute implements StandardRoute {
 
@@ -484,11 +483,37 @@ final class Route extends MainRoute implements StandardRoute {
      *
      * @see \Hleb\Constructor\Routes\Route::get()
      *
-     * @param array|string $params
+     * @param array|string $params - standard options, string or view(...)
+     *                             - стандартные параметры, строка или view(...)
      * @return Route|null
      */
     public static function fallback($params = []) {
         return self::insert(new RouteMethodFallback(self::instance(), $params));
+    }
+
+    /**
+     * Intercepts all paths for all HTTP methods. Allows you to hang a stub on the entire site.
+     *
+     * Перехватывает все пути для всех HTTP методов. Позволяет повесить на всём сайте заглушку.
+     *
+     * @see \Hleb\Constructor\Routes\Route::get()
+     *
+     * @param string $route - direct path for the stub.
+     *                      - прямой путь для заглушки.
+     *
+     * @param bool $active - whether blocking is enabled.
+     *                     - включена ли блокировка.
+     *
+     * @param array|string $params - standard options, string or view(...)
+     *                             - стандартные параметры, строка или view(...)
+     *
+     * @param int $redirectCode - HTTP redirect code.
+     *                          - код HTTP-редиректа.
+     *
+     * @return Route|null
+     */
+    public static function bottleneck(string $route, bool $active, $params = [], int $redirectCode = 302) {
+        return self::insert(new RouteMethodBottleneck(self::instance(), $route, $active, $params, $redirectCode));
     }
 
 
