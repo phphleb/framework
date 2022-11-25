@@ -184,10 +184,11 @@ final class URLHandler
 
         if ($searchBottleneck) {
             if (isset($block['add']['redirect'])) {
-                if ($this->trimEndSlash($dataPath) === $resultUrl) {
+                $redirectUrl = $this->compoundUrl([$url, $dataPath]);
+                if ($this->trimEndSlash($redirectUrl) === $resultUrl) {
                     return $block;
                 }
-                hleb_redirect(Url::getStandardUrl($dataPath), $block['add']['redirect']);
+                hleb_redirect(Url::getStandardUrl($redirectUrl), $block['add']['redirect']);
             }
             return false;
         }
