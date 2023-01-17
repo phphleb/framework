@@ -322,39 +322,39 @@ class MainLaunchTask extends MainTask
      */
     private function run($commands) {
 
-            if (is_string($commands)) {
-                try {
+        if (is_string($commands)) {
+            try {
                 return $this->executeCommand($commands);
+            } catch (\Throwable $e) {
+                Logger()->error($e->getCode() . ' ' . $e->getMessage());
+            }
+        }
+        if (is_array($commands)) {
+            $success = true;
+            if (!empty($commands[0]) && is_string($commands[0]) && class_exists($commands[0])) {
+                $commands = [[$commands[0], $commands[1] ?? []]];
+            }
+            foreach ($commands as $cmd) {
+                try {
+                    if (is_array($cmd) && class_exists($cmd[0])) {
+                        $task = new $cmd[0];
+                        if ($task instanceof MainTask) {
+                            $this->executeDirectlyCommand($task, $cmd[1] ?? []);
+                        } else {
+                            throw new \ErrorException("The class $cmd[0] is not a command");
+                        }
+                    } else if (is_string($cmd)) {
+                        if (!$this->executeCommand($cmd)) {
+                            $success = false;
+                            throw new \ErrorException("`$cmd` command failed");
+                        }
+                    }
                 } catch (\Throwable $e) {
                     Logger()->error($e->getCode() . ' ' . $e->getMessage());
                 }
             }
-            if (is_array($commands)) {
-                $success = true;
-                if (!empty($commands[0]) && is_string($commands[0]) && class_exists($commands[0])) {
-                    $commands = [[$commands[0], $commands[1] ?? []]];
-                }
-                foreach ($commands as $cmd) {
-                    try {
-                        if (is_array($cmd) && class_exists($cmd[0])) {
-                            $task = new $cmd[0];
-                            if ($task instanceof MainTask) {
-                                $this->executeDirectlyCommand($task, $cmd[1] ?? []);
-                            } else {
-                                throw new \ErrorException("The class $cmd[0] is not a command");
-                            }
-                        } else if (is_string($cmd)) {
-                            if (!$this->executeCommand($cmd)) {
-                                $success = false;
-                                throw new \ErrorException("`$cmd` command failed");
-                            }
-                        }
-                    } catch (\Throwable $e) {
-                        Logger()->error($e->getCode() . ' ' . $e->getMessage());
-                    }
-                }
-                return $success;
-            }
+            return $success;
+        }
 
         return false;
     }
