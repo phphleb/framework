@@ -32,5 +32,13 @@ final class Info extends BaseSingleton
             self::$data[$name][] = $data;
     }
 
+    /** @internal */
+    public static function clear(): void
+    {
+        if (HLEB_ASYNC_MODE !== 1) return;
+
+        self::$data = [];
+    }
+
 }
 
