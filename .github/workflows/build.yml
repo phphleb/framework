@@ -1,6 +1,6 @@
 on:
-  # push:
-  #  branches: [ master ]
+  push:
+    branches: [ master ]
   workflow_dispatch:
 
 name: tests
@@ -23,6 +23,7 @@ jobs:
 
         php:
           - "8.2"
+          - "8.3"
 
     steps:
       - name: Install PHP with extensions
@@ -57,4 +58,4 @@ jobs:
         run: php ./${{ env.tag }}/console autoloader-support-feature
 
       - name: Run tests
-        run: sudo ./${{ env.tag }}/vendor/phphleb/test-o/run ./${{ env.tag }}/vendor/phphleb/tests/
+        run: php ./${{ env.tag }}/vendor/phphleb/test-o/run ./vendor/phphleb/tests/
