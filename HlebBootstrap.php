@@ -170,7 +170,7 @@ class HlebBootstrap
             $this->scriptExitEmulation($e);
 
         } catch (HttpException $e) {
-          $this->scriptHttpError($e);
+            $this->scriptHttpError($e);
 
         } catch (Throwable $t) {
             $this->getPreviousErrorControl($t) or $this->scriptErrorHandling($t);
@@ -268,7 +268,7 @@ class HlebBootstrap
             \spl_autoload_unregister('Hleb\agentLoader');
 
             if (\file_exists($vendorDir = \constant('HLEB_VENDOR_DIR') . '/autoload.php')) {
-               require_once $vendorDir;
+                require_once $vendorDir;
             }
             \spl_autoload_call($class);
             \spl_autoload_unregister('Hleb\reqLoadFunc');
@@ -726,7 +726,7 @@ class HlebBootstrap
         $this->vendorDirectory = \rtrim($this->searchVendorDirectory(), '/\\');
 
         $this->config = $this->getConfig();
-        \error_reporting($this->config['common']['error.reporting']);
+        \error_reporting($this->config['common']['error.reporting'] ?? null);
 
         $this->loadBaseClasses(); // #1
         SystemSettings::init($this->mode);
@@ -891,7 +891,6 @@ class HlebBootstrap
             return;
         }
         $logger = $this->logger;
-        $config = $this->config;
         /**
          * Outputting errors to the logger even if some of the classes are not loaded.
          *
@@ -904,14 +903,11 @@ class HlebBootstrap
             global $logger;
 
             $level = \error_reporting();
-            if ($level === 0) {
+            if ($level >= 0 && ($level === 0 || !($level & $errno))) {
                 return true;
             }
             \class_exists(ErrorLog::class, false) or require __DIR__ . '/Init/ErrorLog.php';
 
-            if ($level !== -1 && !ErrorLog::compareLevel($errno, $level)) {
-                return true;
-            }
             ErrorLog::setLogger($logger);
 
             return ErrorLog::execute($errno, $errstr, $errfile, $errline);
