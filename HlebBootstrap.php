@@ -507,6 +507,8 @@ class HlebBootstrap
                 'custom.function.files' => ['array'],
             ],
         ];
+        // The following errors that occur at this level can be displayed without taking into account the settings and debug mode.
+        // Следующие ошибки, возникающие на данном уровне, могут быть отображены без учёта настроек и режима отладки.
         foreach ($map as $key => $rule) {
             if (empty($config[$key])) {
                 throw new \DomainException("Configuration not found for `$key`");
@@ -903,8 +905,9 @@ class HlebBootstrap
                 return false;
             }
             \class_exists(ErrorLog::class, false) or require __DIR__ . '/Init/ErrorLog.php';
+            ErrorLog::setLogger($logger);
 
-            return ErrorLog::execute($errno, $errstr, $errfile, $errline, $logger);
+            return ErrorLog::execute($errno, $errstr, $errfile, $errline);
         }
 
         \set_error_handler('Hleb\hl_user_log');
