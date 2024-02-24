@@ -41,11 +41,8 @@ final class OnceResult
     }
 
     /**
-     * @inheritDoc
-     *
      * @internal
      */
-    #[\Override]
     public static function rollback(): void
     {
         self::$data = [];
