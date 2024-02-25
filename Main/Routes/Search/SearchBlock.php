@@ -201,24 +201,27 @@ final class SearchBlock
                     }
                     break;
                 }
+                $addressPart = $addressParts[$index];
 
                 // Handler for the initial `@` character in the address.
                 // Обработчик начального символа `@` в адресе.
                 if (\str_starts_with($part, '@')) {
-                    if (\str_starts_with($addressParts[$index], '@')) {
-                        $addressParts[$index] = \substr($addressParts[$index], 1);
+                    if (!\str_starts_with($addressPart, '@')) {
+                        $search = false;
+                        break;
                     }
+                    $addressPart = \substr($addressPart, 1);
                     $part = \substr($part, 1);
                 }
 
                 if (\str_contains($part, '{')) {
                     if (!empty($route['w'][$param])) {
                         if (\str_starts_with($route['w'][$param], '/')) {
-                            if (!\preg_match($route['w'][$param], $addressParts[$index])) {
+                            if (!\preg_match($route['w'][$param], $addressPart)) {
                                 $search = false;
                                 break;
                             }
-                        } else if (!\preg_match('/^' . $route['w'][$param] . '$/u', $addressParts[$index])) {
+                        } else if (!\preg_match('/^' . $route['w'][$param] . '$/u', $addressPart)) {
                             $search = false;
                             break;
                         }
@@ -226,8 +229,8 @@ final class SearchBlock
 
                     // Gather dynamic address matches.
                     // Сбор совпадений с динамическим адресом.
-                    $data[$param] = $addressParts[$index];
-                } else if ($addressParts[$index] !== $part) {
+                    $data[$param] = $addressPart;
+                } else if ($addressPart !== $part) {
                     $search = false;
                     break;
                 }
@@ -238,6 +241,7 @@ final class SearchBlock
                 return $route['k'];
             }
         }
+
         if ($this->fallback) {
             $this->setData($this->list[$fallbackNumber]);
         }
