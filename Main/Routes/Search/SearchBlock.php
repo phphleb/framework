@@ -205,12 +205,10 @@ final class SearchBlock
                 // Handler for the initial `@` character in the address.
                 // Обработчик начального символа `@` в адресе.
                 if (\str_starts_with($part, '@')) {
-                    if (!\str_starts_with($addressParts[$index], '@')) {
-                        $search = false;
-                        break;
+                    if (\str_starts_with($addressParts[$index], '@')) {
+                        $addressParts[$index] = \substr($addressParts[$index], 1);
                     }
                     $part = \substr($part, 1);
-                    $addressParts[$index] = \substr($addressParts[$index], 1);
                 }
 
                 if (\str_contains($part, '{')) {
