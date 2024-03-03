@@ -76,7 +76,7 @@ final class SearchBlock
      */
     public function getIsPlain(): null|bool
     {
-       return $this->isPlain;
+        return $this->isPlain;
     }
 
     /**
@@ -345,8 +345,8 @@ final class SearchBlock
             return false;
         }
         foreach ($data as $level => $rules) {
-             $level = (int)$level - 1;
-             $level < 0 and $level = 0;
+            $level = (int)$level - 1;
+            $level < 0 and $level = 0;
             // Part of the domain from Request by level in conditions.
             // Часть домена из Request по уровню в условиях.
             $item = $parts[$level] ?? [];
@@ -364,7 +364,7 @@ final class SearchBlock
                     continue;
                 }
                 if (!\in_array($item, $rules, true)) {
-                   return false;
+                    return false;
                 }
             } else {
                 return false;
