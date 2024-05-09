@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Hleb;
 
+use App\Bootstrap\Events\KernelEvent;
 use AsyncExitException;
 use Exception;
 use Functions;
@@ -16,8 +17,6 @@ use Hleb\Constructor\Attributes\AvailableAsParent;
 use Hleb\HttpMethods\External\RequestUri;
 use Hleb\Init\{AddressBar, Autoloader, Connectors\HlebConnector, ErrorLog};
 use Hleb\Main\Insert\{BaseAsyncSingleton, BaseSingleton};
-// Prior to php 8.2, the name `Static` may cause an error.
-// До версии php 8.2 именование `Static` может вызывать ошибку.
 use Hleb\Static\Response;
 use Hleb\Main\Logger\{Log, LoggerInterface, LogLevel};
 use Hleb\Main\ProjectLoader;
@@ -43,18 +42,14 @@ use Throwable;
 #[Accessible] #[AvailableAsParent]
 class HlebBootstrap
 {
-    final public const HTTP_TYPES = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS', 'HEAD'];
+    public const HTTP_TYPES = ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS', 'HEAD'];
 
     final public const STANDARD_MODE = 1;
 
     final public const CONSOLE_MODE = 2;
 
     final public const ASYNC_MODE = 3;
-    /**
-     * Available since PHP version >= 8.2.0
-     *
-     * Доступно с версии PHP >= 8.2.0
-     */
+
     protected ?int $mode = null;
 
     protected array $config = [];
@@ -395,6 +390,30 @@ class HlebBootstrap
         }
         if ($this->mode === self::ASYNC_MODE && $request->getMethod() === 'GET') {
             Response::addHeaders(['Content-Type' => 'text/html; charset=UTF-8']);
+        }
+
+        /**
+         * The KernelEvent class is used only to interfere with the pre-request logic.
+         *
+         * Класс KernelEvent используется только для вмешательства в предварительную логику запроса.
+         *
+         * ```php
+         * <?php
+         *
+         * namespace App\Bootstrap\Events;
+         *
+         * final class KernelEvent
+         * {
+         *     public function before(): bool
+         *     {
+         *         return true; // Continue execution
+         *     }
+         * }
+         * ```
+         *
+         */
+        if (class_exists(KernelEvent::class, false) && !(new KernelEvent())->before()) {
+            return;
         }
 
         // Check the incoming URL data for validity.
@@ -780,6 +799,10 @@ class HlebBootstrap
         self::$loadResources = true;
         if ($this->config['common']['debug']) {
             \class_exists(DebugAnalytics::class, false) or require $dir . 'Constructor/Data/DebugAnalytics.php';
+        }
+        $kernelEvent = $this->globalDirectory . '/app/Bootstrap/Events/KernelEvent.php';
+        if (!\class_exists(KernelEvent::class, false) && \file_exists($kernelEvent)) {
+            require $kernelEvent;
         }
     }
 
