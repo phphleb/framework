@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+namespace Hleb;
 
 use App\Bootstrap\ContainerFactory;
 use App\Middlewares\Hlogin\Registrar;
@@ -47,7 +48,7 @@ use Hleb\Static\Template;
 use Throwable;
 
 #[Accessible] #[AvailableAsParent]
-class HlebAsyncBootstrap extends \Hleb\HlebBootstrap
+class HlebAsyncBootstrap extends HlebBootstrap
 {
     private int $processNumber = 0;
 
@@ -73,7 +74,7 @@ class HlebAsyncBootstrap extends \Hleb\HlebBootstrap
         // In asynchronous mode, an initialization error should be logged.
         // В асинхронном режиме ошибка инициализации должна быть отправлена в лог.
         try {
-            \Hleb\HlebBootstrap::__construct($publicPath, $config, $logger);
+            parent::__construct($publicPath, $config, $logger);
         } catch (\Throwable $t) {
             $this->errorLog($t);
             throw $t;
@@ -86,7 +87,7 @@ class HlebAsyncBootstrap extends \Hleb\HlebBootstrap
     #[\Override]
     public function setLogger(LoggerInterface $logger): static
     {
-        \Hleb\HlebBootstrap::setLogger($logger);
+        parent::setLogger($logger);
 
         return $this;
     }
@@ -132,7 +133,7 @@ class HlebAsyncBootstrap extends \Hleb\HlebBootstrap
             } catch (AsyncExitException $e) {
                 $this->asyncScriptExitEmulation($e, (string)\ob_get_contents());
 
-            } catch (\Hleb\HttpException $e) {
+            } catch (HttpException $e) {
                 $this->scriptHttpError($e);
 
             } catch (Throwable $t) {
