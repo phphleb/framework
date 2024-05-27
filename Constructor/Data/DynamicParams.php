@@ -238,9 +238,7 @@ final class DynamicParams extends BaseAsyncSingleton
         }
     }
 
-    /**
-     * @internal
-     */
+    /** @internal */
     public static function setNewDynamicRequestId(): void
     {
         // Fast generation of RFC 4211 UUID v4 similarity
