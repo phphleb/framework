@@ -42,7 +42,10 @@ class TemplateReference extends ContainerUniqueItem implements TemplateInterface
         $module = DynamicParams::getModuleName();
         $moduleType = $module ? Settings::getParam('main', 'module.view.type') : null;
         $viewDir = $moduleType === 'closed' ? '@modules/' . $module . '/views' : "@views";
-        $viewPath = $viewDir. '/' . $viewPath;
+        if ($moduleType === 'closed' && $viewPath === 'error' && !SystemSettings::getRealPath($viewDir . '/error.php')) {
+            $viewDir = '@views';
+        }
+        $viewPath = $viewDir . '/' . $viewPath;
         $hlStartTemplateTime = \microtime(true);
         if (\is_object($config['container'] ?? null)) {
             $container = \is_a($config['container'], ContainerInterface::class) ? $config['container'] : null;
