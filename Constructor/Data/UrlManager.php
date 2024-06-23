@@ -37,7 +37,7 @@ final class UrlManager
                 return '/';
             }
             if (\str_contains($address, '?') && ($endPart === false ||
-                ($endPart === null && \count($replacements) === \substr_count($address, '{') - 1))
+                    ($endPart === null && \count($replacements) === \substr_count($address, '{') - 1))
             ) {
                 $parts = \explode('/', $address);
                 if (\count($parts) === 1) {
@@ -64,13 +64,15 @@ final class UrlManager
             DynamicParams::isEndingUrl() and $address .= '/';
 
             if (\str_contains($address, '{')) {
-                throw new InvalidArgumentException('Wrong number of replacement parts for URL.');
+                \preg_match_all('/\{(.*?)\}/', $address, $matches);
+
+                throw new InvalidArgumentException('Wrong number of replacement parts for URL: ' . \implode(',', $matches[1] ?? []) . " Route name `{$name}`");
             }
 
             return '/' . $address;
         }
 
-        throw new InvalidArgumentException('No match for route by name.');
+        throw new InvalidArgumentException("No match for route by name `{$name}`");
     }
 
     /**
