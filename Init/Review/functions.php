@@ -468,6 +468,21 @@ if (!function_exists('config')) {
     }
 }
 
+if (!function_exists('get_config_or_fail')) {
+    /**
+     * A wrapper for receiving settings parameters. If not present or equal to null, throws an error.
+     *
+     * Обёртка для получения параметров настроек. При отсутствии или равном null выбрасывает ошибку.
+     *
+     * @throws InvalidArgumentException
+     * @see config()
+     */
+    function get_config_or_fail(string $name, string $key): mixed
+    {
+        return config($name, $key) ?? throw InvalidArgumentException("Failed to get `{$key}` parameter from `{$name}` configuration");
+    }
+}
+
 if (!function_exists('hl_redirect')) {
     /**
      * Replacing the internal redirect for normal and asynchronous requests.
