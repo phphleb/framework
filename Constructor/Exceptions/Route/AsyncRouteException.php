@@ -320,5 +320,5 @@ abstract class AsyncRouteException extends \AsyncExitException implements CoreEx
         }
     }
 
-    abstract protected function coloredMessage(): string;
+   abstract protected function coloredMessage(): string;
 }
