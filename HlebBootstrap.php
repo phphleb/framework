@@ -17,7 +17,7 @@ use Hleb\HttpMethods\External\RequestUri;
 use Hleb\Init\{AddressBar, Autoloader, Connectors\HlebConnector, ErrorLog};
 use Hleb\Main\Insert\{BaseAsyncSingleton, BaseSingleton};
 use Hleb\Static\Response;
-use Hleb\Main\Logger\{Log, LoggerInterface, LogLevel};
+use Hleb\Main\Logger\{FileLogger, Log, LoggerInterface, LogLevel};
 use Hleb\Main\ProjectLoader;
 use Phphleb\Idnaconv\IdnaConvert;
 use App\Bootstrap\Events\KernelEvent;
@@ -104,7 +104,7 @@ class HlebBootstrap
 
         // The current version of the framework.
         // Текущая версия фреймворка.
-        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.23');
+        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.24');
 
         $this->logger = $logger;
 
@@ -172,6 +172,8 @@ class HlebBootstrap
         } catch (Throwable $t) {
             $this->getPreviousErrorControl($t) or $this->scriptErrorHandling($t);
         }
+
+        $this->logsPostProcessing();
 
         return $this;
     }
@@ -952,9 +954,29 @@ class HlebBootstrap
                 hl_user_log(E_ERROR, $e['message'] ?? '', $e['file'] ?? null, $e['line'] ?? null);
             }
         }
+        /** @internal */
+        function hl_log_finished(): void
+        {
+            if (\class_exists(FileLogger::class, false)) {
+                FileLogger::finished();
+            }
+        }
 
         if ($this->mode !== self::ASYNC_MODE) {
             \register_shutdown_function('Hleb\hl_shutdown');
+        }
+        \register_shutdown_function('Hleb\hl_log_finished');
+    }
+
+    /**
+     * Performs actions for final processing of logs.
+     *
+     * Выполняет действия для конечной обработки логов.
+     */
+    protected function logsPostProcessing(): void
+    {
+        if (\class_exists(FileLogger::class, false)) {
+            FileLogger::finished();
         }
     }
 }

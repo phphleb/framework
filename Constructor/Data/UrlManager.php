@@ -37,7 +37,7 @@ final class UrlManager
                 return '/';
             }
             if (\str_contains($address, '?') && ($endPart === false ||
-                    ($endPart === null && \count($replacements) === \substr_count($address, '{') - 1))
+                ($endPart === null && \count($replacements) === \substr_count($address, '{') - 1))
             ) {
                 $parts = \explode('/', $address);
                 if (\count($parts) === 1) {
