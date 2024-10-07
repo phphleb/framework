@@ -11,6 +11,7 @@ use App\Bootstrap\ContainerFactory;
 use App\Middlewares\Hlogin\Registrar;
 use AsyncExitException;
 use Exception;
+use Hleb\Base\RollbackInterface;
 use Hleb\Constructor\Attributes\Accessible;
 use Hleb\Constructor\Attributes\AvailableAsParent;
 use Hleb\Constructor\Cache\RouteMark;
@@ -262,15 +263,11 @@ class HlebAsyncBootstrap extends HlebBootstrap
      */
     public static function prepareAsyncRequestData(): void
     {
-        foreach ([DebugAnalytics::class, DynamicParams::class, Request::class, BaseRoute::class,
-                     Response::class, Cookies::class, Log::class, Csrf::class, Registrar::class,
-                     \Hleb\Static\Csrf::class,  Template::class, Dto::class,  AsyncCookies::class,
-                     Path::class, Redirect::class, Arr::class, Converter::class, Debug::class,
-                     Cache::class, RouteMark::class, MainLogLevel::class, Command::class,
-                     ContainerFactory::class, DI::class, Container::class, Router::class, Once::class,
-                     Session::class, Settings::class, System::class, WebConsole::class, ErrorLog::class,
-                 ] as $class) {
-            \class_exists($class, false) && $class::rollback();
+        foreach(\get_declared_classes() as $class) {
+            \is_a($class, RollbackInterface::class, true) and $class::rollback();
+        }
+        foreach ([ContainerFactory::class, Registrar::class, ErrorLog::class] as $class) {
+            \class_exists($class, false) and $class::rollback();
         }
     }
 
