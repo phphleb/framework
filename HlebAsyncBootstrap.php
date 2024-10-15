@@ -398,6 +398,7 @@ class HlebAsyncBootstrap extends HlebBootstrap
         $_SERVER['QUERY_STRING'] = $server['query_string'] ?? '';
         $_SERVER['REQUEST_URI'] = $server['request_uri'] ?? '';
 
+        $_SERVER['HTTPS'] = $_SERVER['SERVER_PORT'] == 443 ? 'on' : 'off';
         // An additional field by which you can get the type of HTTP connection scheme.
         // Дополнительное поле по которому можно получить тип HTTP-схемы подключения.
         if (isset($server['https'])) {
