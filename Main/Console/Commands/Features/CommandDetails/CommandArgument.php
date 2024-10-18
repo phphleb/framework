@@ -35,12 +35,12 @@ final class CommandArgument implements FeatureInterface
         try {
             $custom = (new CustomList())->get();
             $all = \array_merge($this->commands, $custom);
-            if (!\in_array(\trim(current($argv)), $all, true)) {
+            if (!\in_array(\trim(\current($argv)), $all, true)) {
                 // Command not supported.
                 // Команда не поддерживается.
                 return '';
             }
-            if (\in_array(\trim(current($argv)), $custom, true)) {
+            if (\in_array(\trim(\current($argv)), $custom, true)) {
                 $arguments[] = "--desc";
             }
 
