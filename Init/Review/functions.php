@@ -3,19 +3,24 @@
 declare(strict_types=1);
 
 use Hleb\Constructor\Data\View;
+use Hleb\Static\View as StaticView;
 use Hleb\HttpMethods\External\RequestUri;
 use Hleb\HttpMethods\Specifier\DataType;
 use Hleb\Main\Console\Specifiers\ArgType;
+use Hleb\Main\Logger\LoggerWrapper;
 use Hleb\Reference\LogInterface;
 use Hleb\Static\Cache;
+use Hleb\Static\Csrf;
 use Hleb\Static\Debug;
 use Hleb\Static\Once;
 use Hleb\Static\Path;
 use Hleb\Static\Redirect;
 use Hleb\Static\Request;
+use Hleb\Static\Router;
 use Hleb\Static\Script;
 use Hleb\Static\Settings;
 use Hleb\Static\Template;
+use JetBrains\PhpStorm\NoReturn;
 
 if (!function_exists('hl_debug')) {
     /**
@@ -50,7 +55,7 @@ if (!function_exists('hl_db_connection')) {
     function hl_db_connection(string $name): array
     {
         $connection = hl_db_config('db.settings.list')[$name] ?? null;
-        if (!$connection || !is_array($connection)) {
+        if (!$connection || !\is_array($connection)) {
             throw new InvalidArgumentException('Connection not found: ' . $name);
         }
         return $connection;
@@ -126,8 +131,24 @@ if (!function_exists('is_async')) {
      * Returns true if the framework is used in asynchronous mode.
      *
      * Возвращает true, если фреймворк используется в асинхронном режиме.
+     *
+     * @alias hl_is_async()
      */
     function is_async(): bool
+    {
+        return Settings::isAsync();
+    }
+}
+
+if (!function_exists('hl_is_async')) {
+    /**
+     * Returns true if the framework is used in asynchronous mode.
+     *
+     * Возвращает true, если фреймворк используется в асинхронном режиме.
+     *
+     * @see is_async() - alias with short name.
+     */
+    function hl_is_async(): bool
     {
         return Settings::isAsync();
     }
@@ -157,8 +178,29 @@ if (!function_exists('async_exit')) {
      * ```
      *
      * @throws AsyncExitException
+     * @alias hl_async_exit()
      */
+    #[NoReturn]
     function async_exit($message = '', ?int $httpStatus = null, array $headers = []): never
+    {
+        Script::asyncExit($message, $httpStatus, $headers);
+    }
+}
+
+if (!function_exists('hl_async_exit')) {
+    /**
+     * Simulation with exit from the process (script) for asynchronous mode
+     * and normal exit for standard mode.
+     *
+     * Имитация с выходом из процесса (скрипта) для асинхронного режима
+     * и обычный выход для стандартного режима.
+     *
+     * @throws AsyncExitException
+     * @see async_exit() - learn more about the capabilities of the function in the main version.     *
+     *                   - подробно о возможностях функции в основном варианте.
+     */
+    #[NoReturn]
+    function hl_async_exit($message = '', ?int $httpStatus = null, array $headers = []): never
     {
         Script::asyncExit($message, $httpStatus, $headers);
     }
@@ -189,7 +231,19 @@ if (!function_exists('view')) {
      */
     function view(string $template, array $params = [], ?int $status = null): View
     {
-        return \Hleb\Static\View::view($template, $params, $status);
+        return StaticView::view($template, $params, $status);
+    }
+}
+
+if (!function_exists('hl_view')) {
+    /**
+     * @internal
+     * @see view() - current version of the function.
+     *             - актуальная версия функции.
+     */
+    function hl_view(string $template, array $params = [], ?int $status = null): View
+    {
+        return StaticView::view($template, $params, $status);
     }
 }
 
@@ -198,10 +252,26 @@ if (!function_exists('csrf_token')) {
      * The csrf_token() function returns the protected token for protection against CSRF attacks.
      *
      * Функция csrf_token() возвращает защищённый токен для защиты от CSRF-атак.
+     *
+     * @alias hl_csrf_token()
      */
     function csrf_token(): string
     {
-        return \Hleb\Static\Csrf::token();
+        return Csrf::token();
+    }
+}
+
+if (!function_exists('hl_csrf_token')) {
+    /**
+     * The csrf_token() function returns the protected token for protection against CSRF attacks.
+     *
+     * Функция csrf_token() возвращает защищённый токен для защиты от CSRF-атак.
+     *
+     * @see csrf_token() - alias with short name.
+     */
+    function hl_csrf_token(): string
+    {
+        return Csrf::token();
     }
 }
 
@@ -212,10 +282,28 @@ if (!function_exists('csrf_field')) {
      *
      * Функция csrf_field возвращает HTML-контент для вставки
      * в форму для защиты от CSRF-атак.
+     *
+     * @alias hl_csrf_field()
      */
     function csrf_field(): string
     {
-        return \Hleb\Static\Csrf::field();
+        return Csrf::field();
+    }
+}
+
+if (!function_exists('hl_csrf_field')) {
+    /**
+     * The csrf_field function returns HTML content to be inserted
+     * into the form to protect against CSRF attacks.
+     *
+     * Функция csrf_field возвращает HTML-контент для вставки
+     * в форму для защиты от CSRF-атак.
+     *
+     * @see hl_csrf_token() - alias with short name.
+     */
+    function hl_csrf_field(): string
+    {
+        return Csrf::field();
     }
 }
 
@@ -226,8 +314,24 @@ if (!function_exists('template')) {
      * Возвращает содержимое инициализированного шаблона.
      *
      * @see insertTemplate()
+     * @alias hl_template()
      */
     function template(string $viewPath, array $extractParams = [], array $config = []): string
+    {
+        return Template::get($viewPath, $extractParams, $config);
+    }
+}
+
+if (!function_exists('hl_template')) {
+    /**
+     * Returns the content of the initialized template.
+     *
+     * Возвращает содержимое инициализированного шаблона.
+     *
+     * @see insertTemplate()
+     * @see template() - alias with short name.
+     */
+    function hl_template(string $viewPath, array $extractParams = [], array $config = []): string
     {
         return Template::get($viewPath, $extractParams, $config);
     }
@@ -267,6 +371,18 @@ if (!function_exists('insertTemplate')) {
     }
 }
 
+if (!function_exists('hl_insert_template')) {
+    /**
+     * @internal
+     * @see insertTemplate() - current version of the function.
+     *                       - актуальная версия функции.
+     */
+    function hl_insert_template(string $viewPath, array $extractParams = [], array $config = []): void
+    {
+        Template::insert($viewPath, $extractParams, $config);
+    }
+}
+
 if (!function_exists('insertCacheTemplate')) {
     /**
      * Allows you to save the template to the cache, for example
@@ -287,6 +403,18 @@ if (!function_exists('insertCacheTemplate')) {
      *                       - подробнее об аргументах функции.
      */
     function insertCacheTemplate(string $viewPath, array $extractParams = [], int $sec = Cache::DEFAULT_TIME, array $config = []): void
+    {
+        Template::insertCache($viewPath, $extractParams, $sec, $config);
+    }
+}
+
+if (!function_exists('hl_insert_cache_template')) {
+    /**
+     * @internal
+     * @see insertCacheTemplate() - current version of the function.
+     *                            - актуальная версия функции.
+     */
+    function hl_insert_cache_template(string $viewPath, array $extractParams = [], int $sec = Cache::DEFAULT_TIME, array $config = []): void
     {
         Template::insertCache($viewPath, $extractParams, $sec, $config);
     }
@@ -328,7 +456,19 @@ if (!function_exists('url')) {
      */
     function url(string $routeName, array $replacements = [], bool $endPart = true, string $method = 'get'): string
     {
-        return \Hleb\Static\Router::url($routeName, $replacements, $endPart, $method);
+        return Router::url($routeName, $replacements, $endPart, $method);
+    }
+}
+
+if (!function_exists('hl_url')) {
+    /**
+     * @internal
+     * @see url() - current version of the function.
+     *            - актуальная версия функции.
+     */
+    function hl_url(string $routeName, array $replacements = [], bool $endPart = true, string $method = 'get'): string
+    {
+        return Router::url($routeName, $replacements, $endPart, $method);
     }
 }
 
@@ -351,7 +491,19 @@ if (!function_exists('address')) {
      */
     function address(string $routeName, array $replacements = [], bool $endPart = true, string $method = 'get'): string
     {
-        return \Hleb\Static\Router::address($routeName, $replacements, $endPart, $method);
+        return Router::address($routeName, $replacements, $endPart, $method);
+    }
+}
+
+if (!function_exists('hl_address')) {
+    /**
+     * @internal
+     * @see address() - current version of the function.
+     *                - актуальная версия функции.
+     */
+    function hl_address(string $routeName, array $replacements = [], bool $endPart = true, string $method = 'get'): string
+    {
+        return Router::address($routeName, $replacements, $endPart, $method);
     }
 }
 
@@ -407,8 +559,24 @@ if (!function_exists('print_r2')) {
      * Data output to the debug panel.
      *
      * Вывод данных в панель отладки.
+     *
+     * @alias hl_print_r2()
      */
     function print_r2(mixed $data, ?string $name = null): void
+    {
+        Debug::send($data, $name);
+    }
+}
+
+if (!function_exists('hl_print_r2')) {
+    /**
+     * Data output to the debug panel.
+     *
+     * Вывод данных в панель отладки.
+     *
+     * @see print_r2() - alias with short name.
+     */
+    function hl_print_r2(mixed $data, ?string $name = null): void
     {
         Debug::send($data, $name);
     }
@@ -419,6 +587,8 @@ if (!function_exists('var_dump2')) {
      * Improved var_dump() output.
      *
      * Улучшенный вывод var_dump().
+     *
+     * @alias hl_var_dump2()
      */
     function var_dump2(mixed $value, mixed ...$values): void
     {
@@ -432,20 +602,50 @@ if (!function_exists('var_dump2')) {
     }
 }
 
+if (!function_exists('hl_var_dump2')) {
+    /**
+     * Improved var_dump() output.
+     *
+     * Улучшенный вывод var_dump().
+     *
+     * @see var_dump2() - alias with short name.
+     */
+    function hl_var_dump2(mixed $value, mixed ...$values): void
+    {
+        var_dump2($value, ...$values);
+    }
+}
+
 if (!function_exists('dump')) {
     /**
      * Improved formatted output of var_dump().
      *
      * Улучшенный форматированный вывод var_dump().
+     *
+     * @alias hl_dump()
      */
     function dump(mixed $value, mixed ...$values): void
     {
         if (($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
 
-            echo PHP_EOL, \hl_formatting_debug_info($value, ...$values), PHP_EOL;
+            echo PHP_EOL, \_h2_formatting_debug_info($value, ...$values), PHP_EOL;
         } else {
             \var_dump($value, ...$values);
         }
+    }
+}
+
+if (!function_exists('hl_dump')) {
+    /**
+     * Improved formatted output of var_dump().
+     *
+     * Улучшенный форматированный вывод var_dump().
+     *
+     * @see dump() - alias with short name.
+     */
+    function hl_dump(mixed $value, mixed ...$values): void
+    {
+        dump($value, ...$values);
     }
 }
 
@@ -454,12 +654,30 @@ if (!function_exists('dd')) {
      * Improved formatted output of var_dump() with script termination.
      *
      * Улучшенный форматированный вывод var_dump() c завершением работы скрипта.
+     *
+     * @alias hl_dd()
      */
-    function dd(mixed $value, mixed ...$values): void
+    #[NoReturn]
+    function dd(mixed $value, mixed ...$values): never
     {
         \dump($value, ...$values);
         /** @see async_exit() - для асинхронных запросов. */
         \async_exit();
+    }
+}
+
+if (!function_exists('hl_dd')) {
+    /**
+     * Improved formatted output of var_dump() with script termination.
+     *
+     * Улучшенный форматированный вывод var_dump() c завершением работы скрипта.
+     *
+     * @see dd() - alias with short name.
+     */
+    #[NoReturn]
+    function hl_dd(mixed $value, mixed ...$values): never
+    {
+        \dd($value, ...$values);
     }
 }
 
@@ -468,10 +686,26 @@ if (!function_exists('route_name')) {
      * Returns the name of the current route, or null if none has been assigned.
      *
      * Возвращает название текущего маршрута или null если оно не назначено.
+     *
+     * @alias hl_route_name()
      */
     function route_name(): null|string
     {
-        return \Hleb\Static\Router::name();
+        return Router::name();
+    }
+}
+
+if (!function_exists('hl_route_name')) {
+    /**
+     * Returns the name of the current route, or null if none has been assigned.
+     *
+     * Возвращает название текущего маршрута или null если оно не назначено.
+     *
+     * @see route_name() - alias with short name.
+     */
+    function hl_route_name(): null|string
+    {
+        return Router::name();
     }
 }
 
@@ -485,8 +719,28 @@ if (!function_exists('param')) {
      *
      * @see Request::param() - more about return parameters.
      *                       - подробнее о возвращаемых параметрах.
+     * @alias hl_param()
      */
     function param(string $name): DataType
+    {
+        return Request::param($name);
+    }
+}
+
+if (!function_exists('hl_param')) {
+    /**
+     * Returns an object with dynamic query data by parameter name
+     * with a choice of value format.
+     *
+     * Возвращает объект с данными динамического запроса по имени параметра
+     * с возможностью выбора формата значения.
+     *
+     * @see Request::param() - more about return parameters.
+     *                       - подробнее о возвращаемых параметрах.
+     *
+     * @see param() - alias with short name.
+     */
+    function hl_param(string $name): DataType
     {
         return Request::param($name);
     }
@@ -496,11 +750,33 @@ if (!function_exists('setting')) {
     /**
      * Since custom values are recommended to be added to /config/main.php,
      * a separate function is provided for frequent use of this configuration.
+     * Returns the value of the parameter by key from the 'main' settings group.
      *
      * Ввиду того, что пользовательские значения рекомендовано добавлять в /config/main.php,
      * то для частого использования этой конфигурации предусмотрена отдельная функция.
+     * Возвращает значение параметра по ключу из группы настроек 'main'.
+     *
+     * @alias hl_setting()
      */
     function setting(string $key): mixed
+    {
+        return Settings::getParam('main', $key);
+    }
+}
+
+if (!function_exists('hl_setting')) {
+    /**
+     * Since custom values are recommended to be added to /config/main.php,
+     * a separate function is provided for frequent use of this configuration.
+     * Returns the value of the parameter by key from the 'main' settings group.
+     *
+     * Ввиду того, что пользовательские значения рекомендовано добавлять в /config/main.php,
+     * то для частого использования этой конфигурации предусмотрена отдельная функция.
+     * Возвращает значение параметра по ключу из группы настроек 'main'.
+     *
+     * @see setting() - alias with short name.
+     */
+    function hl_setting(string $key): mixed
     {
         return Settings::getParam('main', $key);
     }
@@ -514,7 +790,7 @@ if (!function_exists('config')) {
      * Получение любого значения из конфигурации фреймворка
      * по типу конфигурации и названию значения.
      *
-     * @see hl_config() - alias
+     * @alias hl_config()
      */
     function config(string $name, string $key): mixed
     {
@@ -524,11 +800,17 @@ if (!function_exists('config')) {
 
 if (!function_exists('hl_config')) {
     /**
-     * @see config() - alias
+     * Getting any value from the framework configuration
+     * by configuration type and value name.
+     *
+     * Получение любого значения из конфигурации фреймворка
+     * по типу конфигурации и названию значения.
+     *
+     * @see config() - alias with short name.
      */
     function hl_config(string $name, string $key): mixed
     {
-        return config($name, $key);
+        return Settings::getParam($name, $key);
     }
 }
 
@@ -540,8 +822,25 @@ if (!function_exists('get_config_or_fail')) {
      *
      * @throws InvalidArgumentException
      * @see config()
+     * @alias hl_get_config_or_fail()
      */
     function get_config_or_fail(string $name, string $key): mixed
+    {
+        return config($name, $key) ?? throw new InvalidArgumentException("Failed to get `{$key}` parameter from `{$name}` configuration");
+    }
+}
+
+if (!function_exists('hl_get_config_or_fail')) {
+    /**
+     * A wrapper for receiving settings parameters. If not present or equal to null, throws an error.
+     *
+     * Обёртка для получения параметров настроек. При отсутствии или равном null выбрасывает ошибку.
+     *
+     * @throws InvalidArgumentException
+     * @see config()
+     * @see get_config_or_fail() - alias with short name.
+     */
+    function hl_get_config_or_fail(string $name, string $key): mixed
     {
         return config($name, $key) ?? throw new InvalidArgumentException("Failed to get `{$key}` parameter from `{$name}` configuration");
     }
@@ -553,6 +852,7 @@ if (!function_exists('hl_redirect')) {
      *
      * Замена внутреннего редиректа для обычных и асинхронных запросов.
      */
+    #[NoReturn]
     function hl_redirect(string $location, int $status = 302): void
     {
         Redirect::to($location, $status);
@@ -578,8 +878,24 @@ if (!function_exists('request_host')) {
      * Returns the current host (and port if passed in the URL).
      *
      * Возвращает текущий хост (и порт, если он передан в URL).
+     *
+     * @alias hl_request_host()
      */
     function request_host(): string
+    {
+        return Request::getUri()->getHost();
+    }
+}
+
+if (!function_exists('hl_request_host')) {
+    /**
+     * Returns the current host (and port if passed in the URL).
+     *
+     * Возвращает текущий хост (и порт, если он передан в URL).
+     *
+     * @see request_host() - alias with short name.
+     */
+    function hl_request_host(): string
     {
         return Request::getUri()->getHost();
     }
@@ -596,8 +912,30 @@ if (!function_exists('request_path')) {
      * Параметры можно получить как:
      *
      * request_uri()->getQuery();
+     *
+     * @alias hl_request_path()
      */
     function request_path(): string
+    {
+        return Request::getUri()->getPath();
+    }
+}
+
+if (!function_exists('hl_request_path')) {
+    /**
+     * Returns the current request path from a URL
+     * with no parameters.
+     * Parameters can be obtained as:
+     *
+     * Возвращает текущий путь запроса из URL
+     * без параметров.
+     * Параметры можно получить как:
+     *
+     * hl_request_uri()->getQuery();
+     *
+     * @see request_path() - alias with short name.
+     */
+    function hl_request_path(): string
     {
         return Request::getUri()->getPath();
     }
@@ -612,8 +950,28 @@ if (!function_exists('request_address')) {
      * Параметры можно получить как:
      *
      * request_uri()->getQuery();
+     *
+     * @alias hl_request_address()
      */
     function request_address(): string
+    {
+        return Request::getAddress();
+    }
+}
+
+if (!function_exists('hl_request_address')) {
+    /**
+     * Returns the current request URL without parameters.
+     * Parameters can be obtained as:
+     *
+     * Возвращает текущий URL запроса без параметров.
+     * Параметры можно получить как:
+     *
+     * hl_request_uri()->getQuery();
+     *
+     * @see request_address() - alias with short name.
+     */
+    function hl_request_address(): string
     {
         return Request::getAddress();
     }
@@ -624,10 +982,26 @@ if (!function_exists('logger')) {
      * Logging according to the established levels. logger()->error('Message', []);
      *
      * Логирование по установленным уровням. logger()->error('Message', []);
+     *
+     * @alias hl_logger()
      */
     function logger(): LogInterface
     {
-        return new Hleb\Main\Logger\LoggerWrapper();
+        return new LoggerWrapper();
+    }
+}
+
+if (!function_exists('hl_logger')) {
+    /**
+     * Logging according to the established levels. hl_logger()->error('Message', []);
+     *
+     * Логирование по установленным уровням. hl_logger()->error('Message', []);
+     *
+     * @see logger() - alias with short name.
+     */
+    function hl_logger(): LogInterface
+    {
+        return new LoggerWrapper();
     }
 }
 
@@ -687,7 +1061,6 @@ if (!function_exists('hl_is_dir')) {
     }
 }
 
-
 if (!function_exists('hl_relative_path')) {
     /**
      * Converts the full path to relative to the project's root directory.
@@ -740,6 +1113,18 @@ if (!function_exists('is_empty')) {
     }
 }
 
+if (!function_exists('hl_is_empty')) {
+    /**
+     * @internal
+     * @see is_empty() - current version of the function.
+     *             - актуальная версия функции.
+     */
+    function hl_is_empty(mixed $value): bool
+    {
+        return is_empty($value);
+    }
+}
+
 if (!function_exists('once')) {
     /**
      * The once() function allows you to execute a piece of code only once for one request,
@@ -762,5 +1147,17 @@ if (!function_exists('once')) {
     function once(callable $func): mixed
     {
         return Once::get($func);
+    }
+}
+
+if (!function_exists('hl_once')) {
+    /**
+     * @internal
+     * @see once() - current version of the function.
+     *             - актуальная версия функции.
+     */
+    function hl_once(callable $func): mixed
+    {
+        return once($func);
     }
 }
