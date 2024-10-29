@@ -26,11 +26,4 @@ class CommandReference implements CommandInterface, Interface\Command
 
         return $task->getExecResult();
     }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // Not involved.
-    }
 }

@@ -102,11 +102,4 @@ class ArrReference extends ContainerUniqueItem implements ArrInterface, Interfac
     {
         return ArrayHelper::expand($array);
     }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // Not involved.
-    }
 }

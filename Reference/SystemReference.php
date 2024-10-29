@@ -310,11 +310,4 @@ class SystemReference extends ContainerUniqueItem implements SystemInterface, In
 
         return [];
     }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // This action is not necessary.
-    }
 }

@@ -59,11 +59,4 @@ class RouterReference extends ContainerUniqueItem implements RouterInterface, In
     {
         return DynamicParams::getControllerRelatedData();
     }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // This action is not necessary.
-    }
 }

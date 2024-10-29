@@ -64,12 +64,4 @@ class ConverterReference implements ConverterInterface, Interface\Converter
             throw new \RuntimeException("Class $container not found. You need to install the phphleb/psr-adapter library.");
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    #[\Override]
-    public static function rollback(): void
-    {
-    }
 }

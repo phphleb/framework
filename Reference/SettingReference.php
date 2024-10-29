@@ -174,11 +174,4 @@ class SettingReference extends ContainerUniqueItem implements SettingInterface, 
     {
         return DynamicParams::getDynamicOriginRequest();
     }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // This action is not necessary.
-    }
 }

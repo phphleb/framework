@@ -86,10 +86,4 @@ class LogReference extends ContainerUniqueItem implements LogInterface, Interfac
 
         return $context;
     }
-
-    #[\Override]
-    public static function rollback(): void
-    {
-        // This action is not necessary.
-    }
 }

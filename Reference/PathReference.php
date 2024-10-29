@@ -118,11 +118,4 @@ class PathReference extends ContainerUniqueItem implements PathInterface, Interf
     {
         return Settings::getPath($keyOrPath);
     }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // This action is not necessary.
-    }
 }

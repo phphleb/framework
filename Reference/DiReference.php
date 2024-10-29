@@ -56,13 +56,4 @@ class DiReference extends ContainerUniqueItem implements DiInterface, Interface\
 
         return self::$cachedEvents[$tag] = new ReflectionMethod($class, $method);
     }
-
-    /**
-     * @inheritDoc
-     */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // Not necessary
-    }
 }

@@ -13,7 +13,6 @@ use Hleb\Constructor\Data\SystemSettings;
 use Hleb\Constructor\Templates\Template;
 use Hleb\CoreProcessException;
 use Hleb\Main\Insert\ContainerUniqueItem;
-use Hleb\Reference\Interface\Setting;
 use Hleb\Static\Cache;
 use Hleb\Static\Settings;
 use App\Bootstrap\ContainerInterface;
@@ -117,12 +116,5 @@ class TemplateReference extends ContainerUniqueItem implements TemplateInterface
         }
 
         echo $data;
-    }
-
-    /** @inheritDoc */
-    #[\Override]
-    public static function rollback(): void
-    {
-        // This action is not necessary.
     }
 }
