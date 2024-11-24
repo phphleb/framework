@@ -278,10 +278,12 @@ final class ErrorLog
         $dir = \defined('HLEB_GLOBAL_DIR') ? HLEB_GLOBAL_DIR : \dirname(__DIR__, 4);
         $c = (static function () use ($dir): array {
             try {
-                return include $dir . '/config/common.php';
+                if (\file_exists($directory = $dir . '/config/common.php')) {
+                    return include $directory;
+                }
             } catch (\Throwable) {
-                return [];
             }
+            return [];
         })();
         !\is_bool($c['debug'] ?? null) and $c['debug'] = false;
         isset($c['log.enabled']) or $c['log.enabled'] = true;
