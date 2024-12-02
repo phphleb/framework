@@ -105,7 +105,7 @@ class HlebBootstrap
 
         // The current version of the framework.
         // Текущая версия фреймворка.
-        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.42');
+        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.43');
 
         $this->logger = $logger;
 
@@ -415,7 +415,10 @@ class HlebBootstrap
          * ```
          *
          */
-        if (class_exists(KernelEvent::class, false) && !(new KernelEvent())->before()) {
+        if (($this->config['system']['events.used'] ?? true) !== false &&
+            \class_exists(KernelEvent::class, false) &&
+            !(new KernelEvent())->before()
+        ) {
             return;
         }
 

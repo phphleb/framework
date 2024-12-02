@@ -25,7 +25,7 @@ use Hleb\ParseException;
 use Hleb\Reference\ResponseInterface;
 use Hleb\RouteColoredException;
 use Hleb\Helpers\ReflectionMethod;
-use Hleb\Static\Request;
+use Hleb\Static\Redirect;
 use Hleb\Static\Response;
 use Phphleb\Adminpan\Src\ViewPage;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -91,7 +91,23 @@ final class Workspace
             $after and $this->middlewareUsage($after);
             return $result;
         }
+        if (isset($block['redirect'])) {
+            $this->redirectHandler($block, $params);
+        }
         return false;
+    }
+
+    /**
+     * @throws AsyncExitException
+     */
+    private function redirectHandler(array $block, array $params): void
+    {
+        $location = $block['redirect']['location'];
+        foreach($params as $key => $param) {
+            $location = \str_replace("{%{$key}%}", (string)$param, $location);
+        }
+
+        Redirect::to($location, $block['redirect']['status']);
     }
 
     /**
@@ -529,6 +545,9 @@ final class Workspace
      */
     private function getEventIfExists(string $eventClass): ?Event
     {
+        if (SystemSettings::getValue('system', 'events.used') === false) {
+            return null;
+        }
         $eventMethod = new ReflectionMethod($eventClass, '__construct');
         if ($eventMethod->countArgs() > 1) {
             $event = new $eventClass(...DependencyInjection::prepare($eventMethod));
