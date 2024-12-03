@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+namespace Hleb;
 
 use AsyncExitException;
 use Exception;
@@ -104,7 +105,7 @@ class HlebBootstrap
 
         // The current version of the framework.
         // Текущая версия фреймворка.
-        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.47');
+        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.48');
 
         $this->logger = $logger;
 
@@ -166,7 +167,7 @@ class HlebBootstrap
         } catch (AsyncExitException $e) {
             $this->scriptExitEmulation($e);
 
-        } catch (\Hleb\HttpException $e) {
+        } catch (HttpException $e) {
             $this->scriptHttpError($e);
 
         } catch (Throwable $t) {
@@ -356,7 +357,7 @@ class HlebBootstrap
      *
      * Стандартизация входящего Request. Инициализация проекта. Возвращает Response.
      *
-     * @throws AsyncExitException|Exception|\Hleb\HttpException
+     * @throws AsyncExitException|Exception|HttpException
      */
     protected function loadProject(?object $originRequest = null): void
     {
@@ -700,7 +701,7 @@ class HlebBootstrap
      *
      * Вывод страницы ошибки.
      */
-    protected function scriptHttpError(\Hleb\HttpException $e): void
+    protected function scriptHttpError(HttpException $e): void
     {
         $this->output($e->getMessageContent(), $e->getHttpStatus());
     }
@@ -958,7 +959,7 @@ class HlebBootstrap
         function core_bootstrap_shutdown(): void
         {
             if ($e = \error_get_last() and $e['type'] & (E_ERROR | E_PARSE | E_COMPILE_ERROR | E_CORE_ERROR | E_USER_ERROR)) {
-                \Hleb\core_user_log(E_ERROR, $e['message'] ?? '', $e['file'] ?? null, $e['line'] ?? null);
+                core_user_log(E_ERROR, $e['message'] ?? '', $e['file'] ?? null, $e['line'] ?? null);
             }
         }
         /** @internal - do not use outside the framework core. */
