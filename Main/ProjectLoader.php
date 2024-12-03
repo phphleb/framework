@@ -100,10 +100,7 @@ final class ProjectLoader
         if (\str_starts_with($value, \Functions::PREVIEW_TAG)) {
             $value = \substr($value, \strlen(\Functions::PREVIEW_TAG));
             if (\str_contains($value, '{')) {
-                $replacements = [
-                    '{{method}}' => DynamicParams::getRequest()->getMethod(),
-                    '{{route}}' => $address,
-                ];
+                $replacements = [];
                 foreach (DynamicParams::getDynamicUriParams() as $key => $param) {
                     $replacements["{%$key%}"] = (string)$param;
                 }
