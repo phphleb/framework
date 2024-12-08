@@ -393,6 +393,9 @@ final class DynamicParams extends BaseAsyncSingleton implements RollbackInterfac
     {
         $data = self::addressAsArray();
         $method = $withMethod ? $data['method'] . ' ' : '';
+        if ($data['port'] && !\str_contains($data['host'], ':')) {
+            $data['host'] = $data['host'] . ':' . $data['port'];
+        }
 
         return "{$method}{$data['scheme']}://{$data['host']}{$data['path']}{$data['query']}";
     }
