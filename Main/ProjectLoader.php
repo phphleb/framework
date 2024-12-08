@@ -386,7 +386,7 @@ final class ProjectLoader
             if ($cache) {
                 Response::setBody($cache['value']);
                 Response::addHeaders(['Content-Type' => $cache['type']]);
-                return true;
+                return true; 
             }
         }
         return false;
