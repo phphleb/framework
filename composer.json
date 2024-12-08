@@ -27,5 +27,7 @@
         "phphleb/debugpan": "^2.0.0",
         "phphleb/nicejson": "*",
         "phphleb/salt": "*"
-    }
+    },
+    "minimum-stability": "dev"
+
 }
