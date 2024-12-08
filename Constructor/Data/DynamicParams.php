@@ -379,14 +379,22 @@ final class DynamicParams extends BaseAsyncSingleton implements RollbackInterfac
 
     public static function addressAsArray(): array
     {
-           return [
-               'host' => self::getRequest()->getUri()->getHost(),
-               'scheme' => self::getRequest()->getUri()->getScheme(),
-               'path' => self::getRequest()->getUri()->getPath(),
-               'method' => self::getRequest()->getMethod(),
-               'port' => self::getRequest()->getUri()->getPort(),
-               'query' => self::getRequest()->getUri()->getQuery(),
-           ];
+        return [
+            'host' => self::getRequest()->getUri()->getHost(),
+            'scheme' => self::getRequest()->getUri()->getScheme(),
+            'path' => self::getRequest()->getUri()->getPath(),
+            'method' => self::getRequest()->getMethod(),
+            'port' => self::getRequest()->getUri()->getPort(),
+            'query' => self::getRequest()->getUri()->getQuery(),
+        ];
+    }
+
+    public static function addressAsString(bool $withMethod = false): string
+    {
+        $data = self::addressAsArray();
+        $method = $withMethod ? $data['method'] . ' ' : '';
+
+        return "{$method}{$data['scheme']}://{$data['host']}{$data['path']}{$data['query']}";
     }
 
     /**

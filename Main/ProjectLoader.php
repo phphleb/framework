@@ -143,7 +143,7 @@ final class ProjectLoader
         if (!DynamicParams::isDebug() && SystemSettings::isAsync()) {
             if ($isSimple) {
                 return [
-                    'id' => DynamicParams::addressAsArray(),
+                    'id' => DynamicParams::addressAsString(true),
                     'value' => $value,
                     'type' => $contentType,
                 ];
@@ -287,7 +287,7 @@ final class ProjectLoader
                 }
                 StandardCookies::sync();
             } else {
-               AsyncConsolidator::initAsyncSessionAndCookies();
+                AsyncConsolidator::initAsyncSessionAndCookies();
             }
             if (\session_status() !== PHP_SESSION_ACTIVE) {
                 throw new CoreProcessException('SESSION not initialized!');
@@ -382,13 +382,11 @@ final class ProjectLoader
     private static function cachePlainRoutes(): bool
     {
         if (self::$cachePlainRoutes) {
-            $current = DynamicParams::addressAsArray();
-            foreach (self::$cachePlainRoutes as $cache) {
-                if ($current === $cache['id']) {
-                    Response::setBody($cache['value']);
-                    Response::addHeaders(['Content-Type' => $cache['type']]);
-                    return true;
-                }
+            $cache = self::$cachePlainRoutes[DynamicParams::addressAsString(true)] ?? [];
+            if ($cache) {
+                Response::setBody($cache['value']);
+                Response::addHeaders(['Content-Type' => $cache['type']]);
+                return true;
             }
         }
         return false;
@@ -404,12 +402,9 @@ final class ProjectLoader
         if (!$data) {
             return;
         }
-        foreach (self::$cachePlainRoutes as $cache) {
-            if ($data['id'] === $cache['id']) {
-                return;
-            }
-        }
-        self::$cachePlainRoutes[] = $data;
+        $id = $data['id'];
+        unset($data['id']);
+        self::$cachePlainRoutes[$id] = $data;
     }
 
     /**
