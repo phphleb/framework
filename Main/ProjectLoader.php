@@ -393,14 +393,17 @@ final class ProjectLoader
     }
 
     /**
-     * Added to the cache if there is no such value already.
+     * Added to the cache.
      *
-     * Добавляется в кеш, если там еще нет такого значения.
+     * Добавляется в кеш.
      */
     private static function addToPlainCache(array $data): void
     {
         if (!$data) {
             return;
+        }
+        if (\count(self::$cachePlainRoutes) > 1000) {
+            \array_unshift(self::$cachePlainRoutes);
         }
         $id = $data['id'];
         unset($data['id']);
