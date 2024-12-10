@@ -287,7 +287,7 @@ final class ProjectLoader
                 }
                 StandardCookies::sync();
             } else {
-                AsyncConsolidator::initAsyncSessionAndCookies();
+               AsyncConsolidator::initAsyncSessionAndCookies();
             }
             if (\session_status() !== PHP_SESSION_ACTIVE) {
                 throw new CoreProcessException('SESSION not initialized!');
@@ -386,7 +386,7 @@ final class ProjectLoader
             if ($cache) {
                 Response::setBody($cache['value']);
                 Response::addHeaders(['Content-Type' => $cache['type']]);
-                return true; 
+                return true;
             }
         }
         return false;
