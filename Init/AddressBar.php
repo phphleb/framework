@@ -70,7 +70,7 @@ final class AddressBar
         ($endingUrl === 1 || $endingUrl === '1') and $urlPath .= '/';
 
         // Must have a slash when path is missing, but with associated parameters.
-        // Должно быть наличие слеша при отсутствии path, но со связанными параметрами.
+        // Должно быть наличие слэша при отсутствии path, но со связанными параметрами.
         ($this->uri->getQuery() !== '' && $urlPath === '') and $urlPath = \rtrim($urlPath, '/') . '/';
 
         // Amend the homepage URL to match Request.
