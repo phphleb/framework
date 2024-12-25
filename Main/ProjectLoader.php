@@ -295,7 +295,7 @@ final class ProjectLoader
                 }
                 StandardCookies::sync();
             } else {
-                AsyncConsolidator::initAsyncSessionAndCookies();
+               AsyncConsolidator::initAsyncSessionAndCookies();
             }
             if (\session_status() !== PHP_SESSION_ACTIVE) {
                 throw new CoreProcessException('SESSION not initialized!');
