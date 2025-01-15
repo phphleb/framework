@@ -364,7 +364,7 @@ final class HlebConnector
         'Hleb\Init\Headers\ParsePsrHeaders' => '/Init/Headers/ParsePsrHeaders.php',
         'Hleb\Init\Headers\ParseSwooleHeaders' => '/Init/Headers/ParseSwooleHeaders.php',
         'Hleb\Route\Group\GroupPlain' => '/Route/Group/GroupPlain.php',
-        ];
+    ];
 
     /**
      * For this set of classes, the path starts at the root directory (App\Bootstrap).
