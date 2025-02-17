@@ -108,7 +108,7 @@ class HlebBootstrap
 
         // The current version of the framework.
         // Текущая версия фреймворка.
-        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.63');
+        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.0.64');
 
         $this->logger = $logger;
 
@@ -877,9 +877,9 @@ class HlebBootstrap
                 }
             }
         }
-        if ($request->getUri()->getPath() === '/') {
-            return;
-        }
+       if ($request->getUri()->getPath() === '/') {
+           return;
+       }
         $urlValidator = $this->mode === self::ASYNC_MODE ? ($this->addressBar ??= new AddressBar()) : new AddressBar();
         $urlValidator->init(SystemSettings::getData(), $request);
         if ($urlValidator->check()->isUrlCompare()) {
