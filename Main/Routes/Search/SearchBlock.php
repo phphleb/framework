@@ -164,7 +164,7 @@ final class SearchBlock
                 // Check if the address matches the variant route.
                 // Проверяется, подходит ли адрес для вариативного маршрута.
                 if ($this->checkVariableRoute($addressParts, $routeParts)) {
-                    $this->setData($route);
+                    $this->setData($route, $this->data);
                     return $route['k'];
                 }
             }
