@@ -352,7 +352,7 @@ final class SearchBlock
         }
         $result = (new RangeChecker($exactPart))->check(\count($addressParts) - \count($routeParts));
         if ($result) {
-            $this->data = $this->updateData(array_values(array_slice($addressParts, \count($routeParts) - 1)));
+            $this->data = $this->updateData(array_values(array_slice($addressParts, \count($routeParts))));
         }
 
         return $result;
