@@ -4,7 +4,6 @@
 
 namespace Hleb\Main;
 
-use App\Bootstrap\Events\KernelEvent;
 use AsyncExitException;
 use Hleb\Constructor\Data\DynamicParams;
 use Hleb\Constructor\Data\SystemSettings;
@@ -502,7 +501,7 @@ final class ProjectLoader
     private static function searchKernelEvent(): bool
     {
         if ((SystemSettings::getSystemValue('events.used') ?? true) !== false) {
-            if (\is_null(self::$kernelEventExists) && !\class_exists(KernelEvent::class, false)) {
+            if (\is_null(self::$kernelEventExists)) {
                 $file = SystemSettings::getPath('@global/app/Bootstrap/Events/KernelEvent.php');
                 self::$kernelEventExists = \file_exists($file);
                 if (self::$kernelEventExists) {
