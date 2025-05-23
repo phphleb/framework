@@ -253,7 +253,6 @@ class HlebBootstrap
     {
         return [
             'common' => [
-                'allowed.hosts' => [],
                 'log.level.in-cli' => false,
                 'system.log.level' => 'warning',
                 'log.sort' => true,
@@ -516,7 +515,6 @@ class HlebBootstrap
         $map = [
             'common' => [
                 'debug' => ['boolean'], //required
-                'allowed.hosts' => ['array'], //required
                 'log.enabled' => ['boolean'], //required
                 'max.log.level' => ['string'], //required
                 'max.cli.log.level' => ['string'], //required
