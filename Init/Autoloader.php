@@ -20,8 +20,6 @@ final class Autoloader
 
     private static ?string $globalPath = null;
 
-    private static bool $singleCall = true;
-
     /**
      * When starting the framework, you need to pass a values.
      *
@@ -32,13 +30,11 @@ final class Autoloader
     public static function init(
         string $vendorPath,
         string $globalPath,
-        bool   $singleCall = true,
     ): void
     {
         self::$vendorPath = $vendorPath;
         self::$globalPath = $globalPath;
         self::$frameworkPath = $vendorPath . '/phphleb/framework';
-        self::$singleCall = $singleCall;
     }
 
     /**
@@ -78,24 +74,18 @@ final class Autoloader
     /**
      * Template method for loading arbitrary connectors.
      * A non-standard way, thanks to which you can search for a match
-     * only in a specific group of classes and reduce the scope of the search.
+     * only in a specific group of classes.
      * Returns the path to the file, or false if there is no match.
      *
      * Шаблонный метод для загрузки произвольных коннекторов.
      * Нестандартный способ, благодаря которому можно искать соответствие
-     * только в конкретной группе классов и сокращать область поиска.
+     * только в конкретной группе классов.
      * Возвращает путь к файлу или false при отсутствии совпадения.
      */
     public static function searchFile(string $class, array &$data, ?string $path = null): string|false
     {
         if (isset($data[$class])) {
-            $classSubPath = $data[$class];
-            // In a real project, the class will only be needed once.
-            // В реальном проекте класс потребуется только один раз.
-            if (self::$singleCall) {
-                unset($data[$class]);
-            }
-            return ($path ?? self::$vendorPath) . $classSubPath;
+            return ($path ?? self::$vendorPath) . $data[$class];
         }
 
         return false;

@@ -109,7 +109,7 @@ class HlebBootstrap
 
         // The current version of the framework.
         // Текущая версия фреймворка.
-        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.1.0');
+        \defined('HLEB_CORE_VERSION') or \define('HLEB_CORE_VERSION', '2.1.1');
 
         $this->logger = $logger;
 
@@ -836,7 +836,7 @@ class HlebBootstrap
 
         // Registration of autoload (will be done in reverse order).
         // Регистрация автозагрузки (будет выполнена в обратном порядке).
-        Autoloader::init($this->vendorDirectory, $this->globalDirectory, $this->mode !== self::CONSOLE_MODE);
+        Autoloader::init($this->vendorDirectory, $this->globalDirectory);
 
         if (!\function_exists('Hleb\agentLoader')) {
             $this->loadOtherClasses(); // #4
