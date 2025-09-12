@@ -224,8 +224,8 @@ if (!function_exists('view')) {
      *                         - путь до шаблона в папке resources/views (или modules/{module_name}/views в модуле).
      *                           Если это PHP-файл, то расширение указывать не нужно.
      *
-     * @param array $params - The named parameters will be passed to the assigned template as variables.
-     *                      - Именованные параметры будут переданы в назначенный шаблон как переменные.
+     * @param array<string, mixed> $params - The named parameters will be passed to the assigned template as variables.
+     *                                     - Именованные параметры будут переданы в назначенный шаблон как переменные.
      *
      * @param int|null $status - For some simple tasks, you can immediately assign an HTTP response code.
      *                         - Для некоторых простых задач,  можно сразу назначить HTTP-код ответа.

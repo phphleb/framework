@@ -10,6 +10,10 @@ interface TemplateInterface
      * Returns the content of the initialized template.
      *
      * Возвращает содержимое инициализированного шаблона.
+     *
+     * @param array<string, mixed> $extractParams
+     *
+     * @param array<string, mixed> $config
      */
     public function get(string $viewPath, array $extractParams = [], array $config = []): string;
 
@@ -28,6 +32,10 @@ interface TemplateInterface
      * Пример для модуля: для активного модуля путь будет указывать в папку
      * /modules/{module_name}/views/test.php
      *
+     * @param array<string, mixed> $extractParams
+     *
+     * @param array<string, mixed> $config
+     *
      */
     public function insert(string $viewPath, array $extractParams = [], array $config = []): void;
 
@@ -45,6 +53,10 @@ interface TemplateInterface
      * При этом если параметры шаблона ($extractParams) изменятся,
      * то это будет новый созданный кеш,
      * так как параметры входят в ключ кеша вместе с $viewPath.
+     *
+     * @param array<string, mixed> $extractParams
+     *
+     * @param array<string, mixed> $config
      *
      * @see self::insert() - more details about method arguments.
      *                     - подробнее об аргументах метода.

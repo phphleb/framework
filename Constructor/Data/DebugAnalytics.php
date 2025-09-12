@@ -34,6 +34,8 @@ final class DebugAnalytics extends BaseAsyncSingleton implements RollbackInterfa
      * Need to maintain compatibility with @see self::rollback()
      *
      * Необходимо поддерживать совместимость с @see self::rollback()
+     *
+     * @var array<string, array<int, mixed>>
      */
     private static array $data = [];
 
@@ -48,12 +50,19 @@ final class DebugAnalytics extends BaseAsyncSingleton implements RollbackInterfa
         self::$data = [];
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public static function getData(): array
     {
         return self::$data;
     }
 
-    /** @internal */
+    /**
+     * @internal
+     *
+     * @param array<string, array<int, mixed>> $data
+     */
     public static function setData(#[\SensitiveParameter] array $data): void
     {
         self::$data = $data;

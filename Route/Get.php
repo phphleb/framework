@@ -11,6 +11,7 @@ use Hleb\Main\Routes\Methods\BaseType;
  */
 final class Get extends BaseType
 {
+    /** @return string[] */
     #[\Override]
     protected function types(): array
     {

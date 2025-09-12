@@ -36,6 +36,7 @@ final class Domain extends StandardRoute
     use InsertPlainTrait;
     use InsertRedirectTrait;
 
+    /** @param string|string[] $part */
     public function __construct(string|array $part, int $level = 2)
     {
         $this->register([

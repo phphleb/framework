@@ -16,6 +16,7 @@ final class Options extends BaseType
         parent::__construct($route);
     }
 
+    /** @return string[] */
     #[\Override]
     protected function types(): array
     {

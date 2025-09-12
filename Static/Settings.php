@@ -257,6 +257,8 @@ final class Settings extends BaseSingleton
      * Returns a list of allowed languages for the project.
      *
      * Возвращает список разрешенных языков для проекта.
+     *
+     * @return string[]
      */
     public static function getAllowedLanguages(): array
     {

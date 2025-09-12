@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Hleb;
 
+use App\Bootstrap\BaseContainer;
 use App\Bootstrap\ContainerFactory;
 use App\Middlewares\Hlogin\Registrar;
 use AsyncExitException;
@@ -16,12 +17,14 @@ use Hleb\Constructor\Attributes\Accessible;
 use Hleb\Constructor\Attributes\AvailableAsParent;
 use Hleb\HttpMethods\{External\RequestUri, External\SystemRequest};
 use Hleb\Constructor\Data\DebugAnalytics;
+use Hleb\Helpers\ResetAndRollbackHelper;
 use Hleb\HttpMethods\External\Response as SystemResponse;
 use Hleb\HttpMethods\Intelligence\Cookies\AsyncCookies;
 use Hleb\Init\ErrorLog;
 use Hleb\Init\Headers\ParsePsrHeaders;
 use Hleb\Init\Headers\ParseSwooleHeaders;
 use Hleb\Main\Logger\LoggerInterface;
+use Hleb\Reference\LogInterface;
 use Hleb\Static\Response;
 use Throwable;
 
@@ -233,15 +236,15 @@ class HlebAsyncBootstrap extends HlebBootstrap
      */
     protected static function prepareAsyncRequestData(array $config, int $processNumber): void
     {
+        $logger = BaseContainer::instance()->get(LogInterface::class);
         // If your application does not use state storage, you can disable state cleanup.
         // Если в приложении не используется хранение состояния, то можно отключить его очистку.
         if ($config['system']['async.clear.state'] ?? true) {
             foreach (\get_declared_classes() as $class) {
                 \is_a($class, RollbackInterface::class, true) and $class::rollback();
             }
-        }
-        foreach ([ContainerFactory::class, Registrar::class, DebugAnalytics::class, ErrorLog::class] as $class) {
-            \class_exists($class, false) and $class::rollback();
+            ContainerFactory::reset();
+            ResetAndRollbackHelper::rollbackClassState([Registrar::class, DebugAnalytics::class, ErrorLog::class], $logger);
         }
 
         /*
@@ -301,11 +304,11 @@ class HlebAsyncBootstrap extends HlebBootstrap
 
         $this->standardization();
         $this->convertForcedMethod($_POST, $_SERVER, $request);
-        $protocol = \trim(\stristr($_SERVER["SERVER_PROTOCOL"] ?? '','/') ?: '', ' /') ?: '1.1';
+        $protocol = \trim(\stristr($_SERVER["SERVER_PROTOCOL"] ?? '', '/') ?: '', ' /') ?: '1.1';
 
         $streamBody = isset($body) && \is_object($body) ? $body : null;
-        $rawBody    = isset($body) && \is_string($body) ? $body : null;
-        $parsedBody = isset($body) && \is_array($body)  ? $body : null;
+        $rawBody = isset($body) && \is_string($body) ? $body : null;
+        $parsedBody = isset($body) && \is_array($body) ? $body : null;
 
         $_SERVER['REMOTE_ADDR'] = \strip_tags((string)($_SERVER['REMOTE_ADDR'] ?? $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null));
 
