@@ -58,6 +58,9 @@ abstract class CoreContainer extends ExternalSingleton implements CoreContainerI
 {
     private static array $containers = [];
 
+    private static ?bool $supportLazyObjects = null;
+
+
     /**
      * Registered keys for custom services.
      *
@@ -268,7 +271,10 @@ abstract class CoreContainer extends ExternalSingleton implements CoreContainerI
      */
     final public static function isLazyObjectsSupported(): bool
     {
-        return  PHP_VERSION_ID >= 80400;
+        if (is_null(self::$supportLazyObjects)) {
+            self::$supportLazyObjects = \version_compare(\phpversion(), '8.4.0', '>=');
+        }
+        return self::$supportLazyObjects;
     }
 
     /**

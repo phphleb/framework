@@ -3,7 +3,6 @@
 namespace Hleb\Reference;
 
 use Hleb\HttpMethods\External\Response as SystemResponse;
-use Stringable;
 
 /**
  * For backward compatibility with custom containers,
@@ -46,8 +45,6 @@ interface ResponseInterface
      * Returns the set headers of the form ['name' => ['value1', 'value2']].
      *
      * Возвращает установленные заголовки вида ['название' => ['значение1', 'значение2']].
-     *
-     * @return array<string, array<int, string>>
      */
     public function getHeaders(): array;
 
@@ -57,8 +54,6 @@ interface ResponseInterface
      *
      * Устанавливает заголовки (полностью заменяя весь набор) вида
      * ['название' => 'значение'] или ['название' => ['значение1', 'значение2']].
-     *
-     * @param array<string, array<int, string>>|array<string, string> $headers
      */
     public function replaceHeaders(array $headers): void;
 
@@ -86,8 +81,6 @@ interface ResponseInterface
      *
      * Возвращает значение заголовка по названию, установленного с помощью объекта Response.
      * Если заголовок был установлен как header(...), то найти его можно при помощи headers_list().
-     *
-     * @return string[]
      */
     public function getHeader(string $name): array;
 
@@ -99,8 +92,6 @@ interface ResponseInterface
      * Добавляет заголовки к набору, вместе с этим заменяя дубликаты,
      * вида [`название` => [`значение1`, 'значение2']], [`название` => 'значение'] или ['название: значение'].
      * Если $replace отрицателен и такой заголовок уже существует, то не производит замену.
-     *
-     * @param array<int, string>|array<string, mixed> $headers
      */
     public function addHeaders(array $headers, bool $replace = true): void;
 
@@ -139,7 +130,7 @@ interface ResponseInterface
      *
      * Заменяет контент полностью.
      */
-    public function setBody(string|Stringable $body): void;
+    public function setBody($body): void;
 
     /**
      * Adds new content to the end of existing content.

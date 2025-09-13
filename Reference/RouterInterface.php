@@ -38,8 +38,8 @@ interface RouterInterface
      * @param string $routeName - route name. The name must be used in routes.
      *                            - название маршрута. Название должно быть используемым в маршрутах.
      *
-     * @param array<mixed> $replacements - an array of substitutions for substitution in a dynamic route.
-     *                                   - массив замен для подстановки в динамический маршрут.
+     * @param array $replacements - an array of substitutions for substitution in a dynamic route.
+     *                            - массив замен для подстановки в динамический маршрут.
      *
      * @param bool $endPart - whether it is necessary to leave the final part in the route, where it may be optional.
      *                      - нужно ли оставлять конечную часть в маршруте, где она может быть необязательна.
@@ -66,8 +66,6 @@ interface RouterInterface
      * Возвращает false если параметры не совпали с маршрутом (нет такого названия, маршрут не поддерживает
      * указанный метод, не подошли заменяемые части маршрута) или ошибка получения маршрутов.
      *
-     * @param array<mixed> $replacements
-     *
      * @see self::url() - more about method arguments.
      *                  - подробнее об аргументах метода.
      */
@@ -77,8 +75,6 @@ interface RouterInterface
      * Returns the data specified in the controller route (middleware).
      *
      * Возвращает данные, указанные в маршруте контроллера (middleware).
-     *
-     * @return array<mixed>
      */
     public function data(): array;
 }

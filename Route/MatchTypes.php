@@ -12,9 +12,6 @@ use Hleb\Main\Routes\Methods\BaseType;
  */
 final class MatchTypes extends BaseType
 {
-    /**
-     * @param string[] $types
-     */
     public function __construct(
         readonly private array     $types,
         string                     $route,
@@ -23,7 +20,6 @@ final class MatchTypes extends BaseType
         parent::__construct($route, $view);
     }
 
-    /** @return string[] */
     #[\Override]
     protected function types(): array
     {

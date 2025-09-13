@@ -12,7 +12,6 @@ use Hleb\CoreProcessException;
 use Hleb\HttpMethods\External\Response as SystemResponse;
 use Hleb\Main\Insert\BaseAsyncSingleton;
 use Hleb\Reference\ResponseInterface;
-use Stringable;
 
 #[Accessible]
 final class Response extends BaseAsyncSingleton implements RollbackInterface
@@ -72,8 +71,6 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
      * Returns the set headers of the form ['name' => ['value1', 'value2']].
      *
      * Возвращает установленные заголовки вида ['название' => ['значение1', 'значение2']].
-     *
-     * @return array<string, array<int, string>>
      */
     public static function getHeaders(): array
     {
@@ -90,8 +87,6 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
      *
      * Устанавливает заголовки (полностью заменяя весь набор) вида
      * ['название' => 'значение'] или ['название' => ['значение1', 'значение2']].
-     *
-     * @param array<string, array<int, string>>|array<string, string> $headers
      */
     public static function replaceHeaders(array $headers): void
     {
@@ -140,8 +135,6 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
      *
      * Возвращает значение заголовка по названию, установленного с помощью объекта Response.
      * Если заголовок был установлен как header(...), то найти его можно при помощи headers_list().
-     *
-     * @return string[]
      */
     public static function getHeader(string $name): array
     {
@@ -160,8 +153,6 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
      * Добавляет заголовки к набору, вместе с этим заменяя дубликаты,
      * вида [`название` => [`значение1`, 'значение2']], [`название` => 'значение'] или ['название: значение'].
      * Если $replace отрицателен и такой заголовок уже существует, то не производит замену.
-     *
-     * @param array<int, string>|array<string, mixed> $headers
      */
     public static function addHeaders(array $headers, bool $replace = true): void
     {
@@ -197,7 +188,7 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
      *
      * @see self::setBody()
      */
-    public static function set(string|Stringable $body, ?int $status = null): void
+    public static function set(string|\Stringable $body, ?int $status = null): void
     {
         if (self::$replace) {
             self::$replace->set($body, $status);
@@ -241,7 +232,7 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
      *
      * Заменяет контент полностью.
      */
-    public static function setBody(string|Stringable $body): void
+    public static function setBody($body): void
     {
         if (self::$replace) {
             self::$replace->setBody($body);
@@ -342,13 +333,9 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
     public static function init(SystemResponse $response): void
     {
         if (self::$replace) {
-            /** @var ResponseInterface $replace */
-            $replace = self::$replace;
-            $replace::init($response);
+            self::$replace::init($response);
         } else {
-            /** @var ResponseInterface $instance */
-            $instance = BaseContainer::instance()->get(ResponseInterface::class);
-            $instance::init($response);
+            BaseContainer::instance()->get(ResponseInterface::class)::init($response);
         }
     }
 
@@ -361,13 +348,9 @@ final class Response extends BaseAsyncSingleton implements RollbackInterface
     public static function rollback(): void
     {
         if (self::$replace) {
-            /** @var ResponseInterface $replace */
-            $replace = self::$replace;
-            $replace::rollback();
+            self::$replace::rollback();
         } else {
-            /** @var ResponseInterface $instance */
-            $instance = BaseContainer::instance()->get(ResponseInterface::class);
-            $instance::rollback();
+            BaseContainer::instance()->get(ResponseInterface::class)::rollback();
         }
     }
 

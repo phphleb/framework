@@ -174,8 +174,6 @@ interface SettingInterface
      * Returns a list of allowed languages for the project.
      *
      * Возвращает список разрешенных языков для проекта.
-     *
-     * @return string[]
      */
     public function getAllowedLanguages(): array;
 
@@ -187,8 +185,6 @@ interface SettingInterface
      * Возвращает исходный объект PSR-7, с помощью которого был инициализирован фреймворк.
      * Так как часть данных, при отсутствии, берется из глобальных серверных переменных,
      * то данные объекта могут быть не настолько полными, как у текущего.
-     *
-     * @return \Psr\Http\Message\RequestInterface
      */
     public function getInitialRequest(): object;
 }

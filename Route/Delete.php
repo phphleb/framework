@@ -11,7 +11,6 @@ use Hleb\Main\Routes\Methods\BaseType;
  */
 final class Delete extends BaseType
 {
-    /** @return string[] */
     #[\Override]
     protected function types(): array
     {

@@ -60,8 +60,6 @@ class System extends BaseSingleton
      * Returns a list of all available logging levels.
      *
      * Возвращает перечень всех доступных уровней логирования.
-     *
-     * @return string[]
      */
     public static function getLogLevelList(): array
     {
@@ -76,8 +74,6 @@ class System extends BaseSingleton
      * System information from the cache about the current route.
      *
      * Системная информация из кеша о текущем маршруте.
-     *
-     * @return array<string, mixed>
      */
     public static function getRouteCacheData(): array
     {
@@ -92,8 +88,6 @@ class System extends BaseSingleton
      * General system information about cached routes.
      *
      * Общая системная информация о кешируемых маршрутах.
-     *
-     * @return array<string, mixed>
      */
     public static function getRouteCacheInfo(): array
     {
@@ -184,8 +178,6 @@ class System extends BaseSingleton
      * In debug mode, returns system debug information.
      *
      * В режиме отладки возвращает системные отладочные данные.
-     *
-     * @return array<string, array<int, mixed>|mixed>
      */
     public static function getDataFromDA(?string $key = null): array
     {
@@ -200,8 +192,6 @@ class System extends BaseSingleton
      * Returns information about loaded classes from debug data.
      *
      * Возвращает информацию о загруженных классах из отладочных данных.
-     *
-     * @return array<string, string|false>
      */
     public static function getClassesAutoloadDataFromDA(): array
     {
@@ -216,8 +206,6 @@ class System extends BaseSingleton
      * Returns information about the templates used from the debug data.
      *
      * Возвращает информацию об используемых шаблонах из отладочных данных.
-     *
-     * @return array<int, array<string, mixed>>
      */
     public static function getInsertTemplateDataFromDA(): array
     {
@@ -232,8 +220,6 @@ class System extends BaseSingleton
      * Returns information from the debug data about the middleware controllers being used.
      *
      * Возвращает информацию  из отладочных данных об используемых контроллерах-посредниках.
-     *
-     * @return array<int, array<string, mixed>>
      */
     public static function getMiddlewareDataFromDA(): array
     {
@@ -248,8 +234,6 @@ class System extends BaseSingleton
      * Returns information from debug data about the current controller.
      *
      * Возвращает информацию из отладочных данных о текущем контроллере.
-     *
-     * @return string[]
      */
     public static function getInitiatorDataFromDA(): array
     {
@@ -264,8 +248,6 @@ class System extends BaseSingleton
      * Returns general debug information.
      *
      * Возвращает общие отладочные данные.
-     *
-     * @return array<int, array<int|string, mixed>>
      */
     public static function getDebugDataFromDA(): array
     {
@@ -280,8 +262,6 @@ class System extends BaseSingleton
      * Returns debug data for development.
      *
      * Возвращает отладочные данные для разработки.
-     *
-     * @return array<int, array<int|string, array<string, mixed>>>
      */
     public static function getHlCheckDataFromDA(): array
     {
@@ -296,8 +276,6 @@ class System extends BaseSingleton
      * Returns debug information about database queries.
      *
      * Возвращает отладочную информацию о запросах к базе данных.
-     *
-     * @return array<int, array<string, mixed>>
      */
     public static function getDbDebugDataFromDA(): array
     {
@@ -515,8 +493,8 @@ class System extends BaseSingleton
      * @param float $microtime - execution time in milliseconds.
      *                         - время выполнения в миллисекундах.
      *
-     * @param array<mixed> $params - additional parameters for logging.
-     *                             - дополнительные параметры для вывода в лог.
+     * @param array $params - additional parameters for logging.
+     *                      - дополнительные параметры для вывода в лог.
      *
      * @param string|null $dbname - name of the database.
      *                            - название базы данных.
@@ -558,7 +536,7 @@ class System extends BaseSingleton
      *
      * @param string $taskClass - the class being checked.
      *                          - проверяемый класс.
-     * @return string[]
+     * @return array
      */
     public static function getTaskPermissions(string $taskClass): array
     {

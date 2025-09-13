@@ -40,11 +40,10 @@ final class Script extends BaseSingleton
      *     ...
      *   }
      * ```
-     * @param array<int, string>|array<string, mixed> $headers
      *
      * @throws AsyncExitException
      */
-    public static function asyncExit(int|string $message = '', ?int $httpStatus = null, array $headers = []): never
+    public static function asyncExit($message = '', ?int $httpStatus = null, array $headers = []): never
     {
         if (self::$replace) {
             self::$replace->asyncExit($message, $httpStatus, $headers);
@@ -74,12 +73,10 @@ final class Script extends BaseSingleton
      *
      * Обёртка для классического выхода из скрипта. Неприменимо для асинхронного режима.
      *
-     * @param array<int, string>|array<string, mixed> $headers
-     *
      * @internal
      */
     #[NoReturn]
-    public static function standardExit(int|string $message = '', int $httpCode = 200, array $headers = []): never
+    public static function standardExit($message = '', int $httpCode = 200, array $headers = []): never
     {
         if (self::$replace) {
             self::$replace->standardExit($message, $httpCode, $headers);
@@ -87,12 +84,10 @@ final class Script extends BaseSingleton
             \headers_sent() or \http_response_code($httpCode);
             foreach ($headers as $name => $header) {
                 if (\is_array($header)) {
-                    /** @var string $h */
                     foreach ($header as $h) {
                         \header("$name: $h");
                     }
                 } else {
-                    /** @var string $header */
                     \header("$name: $header");
                 }
             }

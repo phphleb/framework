@@ -84,6 +84,9 @@ final class DynamicParams extends BaseAsyncSingleton implements RollbackInterfac
      *
      * @param float|null $startTime
      *
+     * @param bool $newId - generate a new request ID.
+     *                    - сгенерировать новый ID запроса.
+     *
      * @return void
      */
     public static function initRequest(

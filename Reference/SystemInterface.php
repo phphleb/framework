@@ -30,8 +30,6 @@ interface SystemInterface
      * Returns a list of all available logging levels.
      *
      * Возвращает перечень всех доступных уровней логирования.
-     *
-     * @return string[]
      */
     public function getLogLevelList(): array;
 
@@ -39,8 +37,6 @@ interface SystemInterface
      * System information from the cache about the current route.
      *
      * Системная информация из кеша о текущем маршруте.
-     *
-     * @return array<string, mixed>
      */
     public function getRouteCacheData(): array;
 
@@ -48,8 +44,6 @@ interface SystemInterface
      * General system information about cached routes.
      *
      * Общая системная информация о кешируемых маршрутах.
-     *
-     * @return array<string, mixed>
      */
     public function getRouteCacheInfo(): array;
 
@@ -98,8 +92,6 @@ interface SystemInterface
      * In debug mode, returns system debug information.
      *
      * В режиме отладки возвращает системные отладочные данные.
-     *
-     * @return array<string, array<int, mixed>|mixed>
      */
     public function getDataFromDA(?string $key = null): array;
 
@@ -107,8 +99,6 @@ interface SystemInterface
      * Returns information about loaded classes from debug data.
      *
      * Возвращает информацию о загруженных классах из отладочных данных.
-     *
-     * @return array<string, string|false>
      */
     public function getClassesAutoloadDataFromDA(): array;
 
@@ -116,8 +106,6 @@ interface SystemInterface
      * Returns information about the templates used from the debug data.
      *
      * Возвращает информацию об используемых шаблонах из отладочных данных.
-     *
-     * @return array<int, array<string, mixed>>
      */
     public function getInsertTemplateDataFromDA(): array;
 
@@ -125,8 +113,6 @@ interface SystemInterface
      * Returns information from the debug data about the middleware controllers being used.
      *
      * Возвращает информацию  из отладочных данных об используемых контроллерах-посредниках.
-     *
-     * @return array<int, array<string, mixed>>
      */
     public function getMiddlewareDataFromDA(): array;
 
@@ -134,8 +120,6 @@ interface SystemInterface
      * Returns information from debug data about the current controller.
      *
      * Возвращает информацию из отладочных данных о текущем контроллере.
-     *
-     * @return string[]
      */
     public function getInitiatorDataFromDA(): array;
 
@@ -143,8 +127,6 @@ interface SystemInterface
      * Returns general debug information.
      *
      * Возвращает общие отладочные данные.
-     *
-     * @return array<int, array<int|string, mixed>>
      */
     public function getDebugDataFromDA(): array;
 
@@ -152,8 +134,6 @@ interface SystemInterface
      * Returns debug data for development.
      *
      * Возвращает отладочные данные для разработки.
-     *
-     * @return array<int, array<int|string, array<string, mixed>>>
      */
     public function getHlCheckDataFromDA(): array;
 
@@ -161,8 +141,6 @@ interface SystemInterface
      * Returns debug information about database queries.
      *
      * Возвращает отладочную информацию о запросах к базе данных.
-     *
-     * @return array<int, array<string, mixed>>
      */
     public function getDbDebugDataFromDA(): array;
 
@@ -297,8 +275,8 @@ interface SystemInterface
      * @param float $microtime - execution time in milliseconds.
      *                         - время выполнения в миллисекундах.
      *
-     * @param array<mixed> $params - additional parameters for logging.
-     *                             - дополнительные параметры для вывода в лог.
+     * @param array $params - additional parameters for logging.
+     *                      - дополнительные параметры для вывода в лог.
      *
      * @param string|null $dbname - name of the database.
      *                            - название базы данных.
@@ -334,7 +312,7 @@ interface SystemInterface
      *
      * @param string $taskClass - the class being checked.
      *                          - проверяемый класс.
-     * @return string[]
+     * @return array
      */
     public static function getTaskPermissions(string $taskClass): array;
 }

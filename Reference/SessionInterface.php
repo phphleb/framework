@@ -8,8 +8,6 @@ interface SessionInterface
      * Returns an array with current session data.
      *
      * Возвращает массив с данными текущей сессии.
-     *
-     * @return array<mixed>
      */
     public function all(): array;
 
@@ -32,8 +30,6 @@ interface SessionInterface
      * Assigns session data by parameter name.
      *
      * Присваивает данные сессии по названию параметра.
-     *
-     * @param string|float|int|array<mixed>|bool|null $data
      */
     public function set(string|int $name, string|float|int|array|bool|null $data): void;
 
@@ -85,8 +81,8 @@ interface SessionInterface
      * @param string $name - name of the flash session.
      *                     - название flash-сессии.
      *
-     * @param string|float|int|array<mixed>|bool|null $data - session data, for example, the text of the message to the user.
-     *                                                      - данные сессии, например, текст сообщения пользователю.
+     * @param string|float|int|array|bool|null $data - session data, for example, the text of the message to the user.
+     *                                               - данные сессии, например, текст сообщения пользователю.
      *
      * @param int $repeat - the number of next requests during which the session will exist.
      *                    - количество следующих запросов при котором сессия будет существовать.
@@ -105,8 +101,6 @@ interface SessionInterface
      *
      * @see self::allFlash()
      *
-     * @param string|float|int|array<mixed>|bool|null $default
-     * @return string|float|int|array<mixed>|bool|null
      */
     public function getFlash(string $name, string|float|int|array|bool|null $default = null): string|float|int|array|bool|null;
 
@@ -114,9 +108,6 @@ interface SessionInterface
      * Obtaining a specific flash session and then deleting this data from the current session.
      *
      * Получение конкретной flash-сессии с последующим удалением этих данных из текущей сессии.
-     *
-     * @param string|float|int|array<mixed>|bool|null $default
-     * @return string|float|int|array<mixed>|bool|null
      */
     public function getAndClearFlash(string $name, string|float|int|array|bool|null $default = null): string|float|int|array|bool|null;
 
@@ -151,8 +142,6 @@ interface SessionInterface
      * Массив содержит массивы, в которых указаны данные для сессии,
      * если она установлена в прошлом запросе (old),
      * в текущем запросе (new) и оставшееся кол-во повторов (reps_left).
-     *
-     * @return array<mixed>
      */
     public function allFlash(): array;
 

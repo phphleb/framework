@@ -43,6 +43,6 @@ Response::addHeaders([
     'Cache-Control' => 'public, max-age=31536000',
     'Pragma' => 'cache'
 ]);
-Response::setBody(\file_get_contents($file));
+isset($file) and Response::setBody(\file_get_contents($file));
 
 return true;

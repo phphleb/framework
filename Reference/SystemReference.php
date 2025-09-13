@@ -22,7 +22,6 @@ use Hleb\Main\Console\ConsoleHandler;
 use Hleb\Main\Console\WebConsole;
 use Hleb\Main\Insert\ContainerUniqueItem;
 use Hleb\Main\Logger\LogLevel;
-use Hleb\Main\Routes\ExampleRouteClass;
 use Hleb\Main\System\LibraryServiceAddress;
 use Hleb\Static\Settings;
 
@@ -64,7 +63,7 @@ class SystemReference extends ContainerUniqueItem implements SystemInterface, In
         if (!$class || !\class_exists($class, false)) {
             return [];
         }
-        /** @var ExampleRouteClass $class */
+        /** @var object $class */
         $data = $class::getData();
         if (!$data) {
             return [];
@@ -83,7 +82,7 @@ class SystemReference extends ContainerUniqueItem implements SystemInterface, In
                 require $file;
             }
         }
-        /** @var ExampleRouteClass $infoClassName */
+        /** @var object $infoClassName */
         return $infoClassName::getData();
     }
 

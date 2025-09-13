@@ -11,7 +11,6 @@ namespace Hleb\Base;
  * and the rollback() method is overridden, then it will be called twice.
  * Therefore, if you need to perform an action to complete an asynchronous request,
  * use it in the rollback() of the App\Bootstrap\ContainerFactory class.
- * If the object is in a container, consider a more modern option with ResetInterface.
  *
  * При нахождении этого интерфейса у используемого класса
  * в асинхронном режиме вызывается метод rollback() в конце каждого запроса,
@@ -21,9 +20,6 @@ namespace Hleb\Base;
  * то метод rollback() будет вызван дважды.
  * Поэтому, если необходимо выполнить действие по завершению асинхронного запроса,
  * используйте его в rollback() класса App\Bootstrap\ContainerFactory.
- * Если объект находится в контейнере, то рассмотрите более современный вариант с ResetInterface.
- *
- * @see ResetInterface
  */
 interface RollbackInterface
 {
@@ -41,21 +37,19 @@ interface RollbackInterface
      * ```php
      * class Example implements \Hleb\Base\RollbackInterface
      * {
-     *    private static ?Item $currentItem= null;
+     *    private static ?User $currentUser = null;
      *
-     *    public function __construct(Item $item) {
-     *      self::$currentItem = $item;
+     *    public function __construct(User $user) {
+     *      self::$currentUser = $user;
      *    }
      *
      *    #[\Override]
      *    public static function rollback(): void {
-     *       self::$currentItem = null;
+     *       self::$currentUser = null;
      *    }
      * }
      *
      * ```
-     * @see ResetInterface - to clear the state of objects in the container.
-     *                     - для очистки состояния объектов в контейнере.
      */
     public static function rollback(): void;
 }

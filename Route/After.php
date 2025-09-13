@@ -28,7 +28,6 @@ final class After extends StandardRoute
     use InsertDomainTrait;
     use InsertPlainTrait;
 
-    /** @param array<mixed> $data */
     public function __construct(string $target, ?string $method, array $data = [])
     {
         [$class, $method] = $this->searchMiddlewareAttributes($target, $method);

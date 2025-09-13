@@ -18,7 +18,6 @@ final class GroupDomain extends StandardRoute
     use GroupPlainTrait;
     use GroupProtectTrait;
 
-    /** @param string[]|string $part */
     public function __construct(string|array $part, int $level = 2)
     {
         $this->register([
