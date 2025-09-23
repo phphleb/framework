@@ -70,14 +70,6 @@ jobs:
           unzip -q hleb2.zip
           mv hleb-master ${{ env.tag }}
 
-      - name: Download framework archive
-        run: |
-          wget ${{ env.archive_url }} -O hleb2.zip
-
-      - name: Unpack framework archive
-        run: |
-          unzip -q hleb2.zip
-          mv hleb-master ${{ env.tag }}
 
       - name: Framework version
         run: php ./${{ env.tag }}/console --version
