@@ -3,7 +3,7 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
-name: tests
+name: build-and-tests-via-composer
 
 jobs:
   tests:

@@ -4,7 +4,7 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
-name: tests
+name: build-and-tests-from-zip
 
 jobs:
   tests:
