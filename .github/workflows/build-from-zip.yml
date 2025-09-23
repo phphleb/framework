@@ -48,7 +48,7 @@ jobs:
       - name: Unpack framework archive
         run: |
           unzip -q hleb2.zip
-          mv hleb2-master ${{ env.tag }}
+          mv hleb-master ${{ env.tag }}
 
       - name: Framework version
         run: php ./${{ env.tag }}/console --version
