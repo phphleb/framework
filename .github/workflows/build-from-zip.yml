@@ -1,0 +1,69 @@
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+name: tests
+
+jobs:
+  tests:
+    name: PHP-${{ matrix.php }}-${{ matrix.os }}
+
+    env:
+      extensions: json, pdo
+      tag: hleb2-php${{ matrix.php }}-${{ matrix.os }}
+      archive_url: "https://github.com/phphleb/hleb/archive/refs/heads/master.zip"
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+
+        php:
+          - "8.2"
+          - "8.3"
+          - "8.4"
+
+    steps:
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ env.extensions }}
+          ini-values: date.timezone='UTC'
+          coverage: none
+          tools: composer:v2
+
+      - name: Check PHP
+        run: php -v
+
+      - name: Download framework archive
+        run: |
+          wget ${{ env.archive_url }} -O hleb2.zip
+
+      - name: Unpack framework archive
+        run: |
+          unzip -q hleb2.zip
+          mv hleb2-master ${{ env.tag }}
+
+      - name: Framework version
+        run: php ./${{ env.tag }}/console --version
+
+      - name: Install tests
+        run: cd ./${{ env.tag }} && composer require phphleb/tests
+
+      - name: Set strict mode
+        run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
+
+      - name: Code reduction check
+        run: php ./${{ env.tag }}/console clearing-comment-feature
+
+      - name: Check autoloader
+        run: php ./${{ env.tag }}/console autoloader-support-feature
+
+      - name: Run tests
+        run: php ./${{ env.tag }}/vendor/phphleb/test-o/run ./vendor/phphleb/tests/
