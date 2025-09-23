@@ -41,23 +41,34 @@ jobs:
       - name: Check PHP
         run: php -v
 
-      - name: Download framework archive
-        run: |
-            if [[ "${{ runner.os }}" == 'Windows' ]]; then
-            powershell -Command "Invoke-WebRequest -Uri '${{ env.archive_url }}' -OutFile 'hleb2.zip'"
-            else
-            wget ${{ env.archive_url }} -O hleb2.zip
-            fi
+      - name: Download framework archive (Windows)
 
-      - name: Unpack framework archive
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Invoke-WebRequest -Uri '${{ env.archive_url }}' -OutFile 'hleb2.zip'
+
+      - name: Download framework archive (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: wget ${{ env.archive_url }} -O hleb2.zip
+
+
+      - name: Unpack framework archive (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-            if [[ "${{ runner.os }}" == 'Windows' ]]; then
-            powershell -Command "Expand-Archive -Path hleb2.zip -DestinationPath ."
-            powershell -Command "Rename-Item -Path hleb-master -NewName '${{ env.tag }}'"
-            else
-            unzip -q hleb2.zip
-            mv hleb-master ${{ env.tag }}
-            fi
+          Expand-Archive -Path hleb2.zip -DestinationPath .
+          Rename-Item -Path hleb-master -NewName '${{ env.tag }}'
+
+      - name: Unpack framework archive (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          unzip -q hleb2.zip
+          mv hleb-master ${{ env.tag }}
 
       - name: Download framework archive
         run: |
