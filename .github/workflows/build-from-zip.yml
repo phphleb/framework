@@ -43,6 +43,24 @@ jobs:
 
       - name: Download framework archive
         run: |
+            if [[ "${{ runner.os }}" == 'Windows' ]]; then
+            powershell -Command "Invoke-WebRequest -Uri '${{ env.archive_url }}' -OutFile 'hleb2.zip'"
+            else
+            wget ${{ env.archive_url }} -O hleb2.zip
+            fi
+
+      - name: Unpack framework archive
+        run: |
+            if [[ "${{ runner.os }}" == 'Windows' ]]; then
+            powershell -Command "Expand-Archive -Path hleb2.zip -DestinationPath ."
+            powershell -Command "Rename-Item -Path hleb-master -NewName '${{ env.tag }}'"
+            else
+            unzip -q hleb2.zip
+            mv hleb-master ${{ env.tag }}
+            fi
+
+      - name: Download framework archive
+        run: |
           wget ${{ env.archive_url }} -O hleb2.zip
 
       - name: Unpack framework archive
