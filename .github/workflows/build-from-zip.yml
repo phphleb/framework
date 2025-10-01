@@ -77,6 +77,9 @@ jobs:
       - name: Install tests
         run: cd ./${{ env.tag }} && composer require phphleb/tests
 
+      - name: Set strict mode
+        run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
+
       - name: Code reduction check
         run: php ./${{ env.tag }}/console clearing-comment-feature
 
