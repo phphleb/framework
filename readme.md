@@ -2,9 +2,10 @@ Engine for PHP Framework HLEB2
 =====================
 
 ![HLEB2](https://img.shields.io/badge/HLEB-2-darkcyan)
+[![Total Downloads](https://poser.pugx.org/phphleb/framework/downloads)](https://packagist.org/packages/phphleb/framework)
 ![PHP](https://img.shields.io/badge/PHP-^8.2-blue)
 [![License: MIT](https://img.shields.io/badge/License-MIT%20(Free)-brightgreen.svg)](https://github.com/phphleb/hleb/blob/master/LICENSE)
-[![build](https://github.com/phphleb/framework/actions/workflows/build-with-composer.yml/badge.svg?event=push)](https://github.com/phphleb/framework/actions/workflows/build-with-composer.yml)
+[![tests](https://github.com/phphleb/framework/actions/workflows/build.yml/tests.svg?event=push)](https://github.com/phphleb/framework/actions/workflows/tests.yml)
 
 If you need to install the framework, use the link: [github.com/phphleb/hleb](https://github.com/phphleb/hleb)
 
