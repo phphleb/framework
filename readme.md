@@ -17,3 +17,5 @@ At the same time, it solves typical tasks, such as routing, shifting actions to 
 📄 [**Pull Request Template**](https://github.com/phphleb/framework/blob/master/.github/PULL_REQUEST_TEMPLATE.md)
 
 📄 [**Security Info**](https://github.com/phphleb/framework/blob/master/.github/SECURITY.md)
+
+Technical instructions for the LLM are located in the file processme.md
