@@ -160,6 +160,14 @@ final class ProjectLoader
     private static function createSimpleCacheData(string $value, string $contentType, bool $isSimple = true): array
     {
         $length = (string)strlen($value);
+
+        if (!SystemSettings::isAsync() && SystemSettings::getSystemValue('classes.preload') === false) {
+            echo $value;
+            header('Content-Type: ' . $contentType);
+            header('Content-Length: ' . $length);
+            header('Connection: close');
+            exit();
+        }
         Response::addToBody($value);
         Response::addHeaders([
             'Content-Type'   => $contentType,
@@ -177,7 +185,6 @@ final class ProjectLoader
         }
         return [];
     }
-
 
     /**
      * Apply settings when a module is detected.
