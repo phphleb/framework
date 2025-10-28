@@ -161,13 +161,6 @@ final class ProjectLoader
     {
         $length = (string)strlen($value);
 
-        if (!SystemSettings::isAsync() && SystemSettings::getSystemValue('classes.preload') === false) {
-            echo $value;
-            header('Content-Type: ' . $contentType);
-            header('Content-Length: ' . $length);
-            header('Connection: close');
-            exit();
-        }
         Response::addToBody($value);
         Response::addHeaders([
             'Content-Type'   => $contentType,
