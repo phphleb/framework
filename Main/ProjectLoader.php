@@ -159,7 +159,10 @@ final class ProjectLoader
      */
     private static function createSimpleCacheData(string $value, string $contentType, bool $isSimple = true): array
     {
-        $length = (string)strlen($value);
+        if (!SystemSettings::isAsync() && SystemSettings::getSystemValue('classes.preload') === false) {
+            \hl_standard_response($value, $contentType);
+        }
+        $length = (string)\strlen($value);
 
         Response::addToBody($value);
         Response::addHeaders([
