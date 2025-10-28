@@ -987,7 +987,7 @@ class HlebBootstrap
     private function skipInitializationIfNeeded(): void
     {
         if ($this->mode === self::STANDARD_MODE
-            && ($this->config['common']['classes.preload'] ?? null) === false
+            && ($this->config['system']['classes.preload'] ?? null) === false
             && ($_SERVER['REQUEST_URI'] ?? '') === '/'
         ) {
             \hl_standard_response();
