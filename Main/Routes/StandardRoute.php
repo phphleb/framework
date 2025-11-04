@@ -167,4 +167,22 @@ abstract class StandardRoute
 
         return $values;
     }
+
+    /**
+     * Allows you to save the route's location in the code.
+     *
+     * Позволяет сохранить с маршрутом его местоположение в коде.
+     */
+    protected function getFileAndLineNumber(int $level = 2): string
+    {
+        $backtrace = \debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $level + 1);
+        $pos = $backtrace[$level] ?? null;
+        if (!$pos || empty($pos['file']) || empty($pos['line'])) {
+            return '';
+        }
+        $parts = explode('routes', $pos['file']);
+        $file = count($parts) === 2 ? '@/routes' . $parts[1] : $pos['file'];
+
+        return $file . ':' . $pos['line'];
+    }
 }

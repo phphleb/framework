@@ -275,6 +275,8 @@ abstract class AsyncRouteException extends \AsyncExitException implements CoreEx
 
     protected string $tag = '';
 
+    protected string $location = '';
+
     public function __construct(string $messageKey = "")
     {
         parent::__construct();
@@ -298,6 +300,13 @@ abstract class AsyncRouteException extends \AsyncExitException implements CoreEx
         if ($sendToLog) {
             Log::error( $this->tag . ': ' . $this->errorInfo['en']);
         }
+
+        return $this;
+    }
+
+    public function addLocation(string $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }
