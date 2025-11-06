@@ -474,8 +474,7 @@ class HlebAsyncBootstrap extends HlebBootstrap
     protected function switchInit(array $config, ?object $request = null): void
     {
         if ($config && $request && ($config['system']['classes.preload'] ?? null) === false) {
-            $connection = \strtolower($request->getHeaderLine('Connection') ?: 'close');
-            $headers = ['Content-Type' => 'text/plain', 'Connection' => $connection];
+            $headers = ['Content-Type' => 'text/plain', 'Connection' => 'close'];
             $output = '';
             $uri = $request->getUri()->getPath();
             if (\str_starts_with($uri, '/user/')) {
