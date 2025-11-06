@@ -1005,11 +1005,10 @@ class HlebBootstrap
     {
         if ($config && ($config['system']['classes.preload'] ?? null) === false) {
             $output = '';
-            $uri = $_SERVER['REQUEST_URI'] ?? '';
+            $uri = \parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
             \http_response_code(200);
-            $connection = \strtolower($_SERVER['HTTP_CONNECTION'] ?? 'close');
             \header('Content-Type: text/plain');
-            \header('Connection: ' . $connection);
+            \header('Connection: close');
             if (\str_starts_with($uri, '/user/')) {
                 $output = \substr($uri, 6);                
             }
