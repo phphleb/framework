@@ -23,7 +23,6 @@ use Hleb\Init\ErrorLog;
 use Hleb\Init\Headers\ParsePsrHeaders;
 use Hleb\Init\Headers\ParseSwooleHeaders;
 use Hleb\Main\Logger\LoggerInterface;
-use Hleb\Reference\LogInterface;
 use Hleb\Static\Response;
 use Throwable;
 
@@ -474,6 +473,7 @@ class HlebAsyncBootstrap extends HlebBootstrap
     protected function switchInit(array $config, ?object $request = null): void
     {
         if ($config && $request && ($config['system']['classes.preload'] ?? null) === false) {
+            Response::init(new SystemResponse());
             $headers = ['Content-Type' => 'text/plain', 'Connection' => 'close'];
             $output = '';
             $uri = \parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
@@ -481,7 +481,11 @@ class HlebAsyncBootstrap extends HlebBootstrap
                 $output = \substr($uri, 6);
             }
             $headers['Content-Length'] = \strlen($output);
-            throw (new AsyncExitException($output))->setHeaders($headers);
+            Response::addHeaders($headers);
+            Response::addToBody($output);
+            $this->response = Response::getInstance();
+
+            throw new AsyncExitException();
         }
     }
 
