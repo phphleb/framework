@@ -466,23 +466,27 @@ class HlebAsyncBootstrap extends HlebBootstrap
 
         return [$body, $headers];
     }
-    
+
     /**
-     * @inheritDoc 
+     * @inheritDoc
+     *
+     * @throws Exception
      */
     protected function switchInit(array $config, ?object $request = null): void
     {
         if ($config && $request && ($config['system']['classes.preload'] ?? null) === false) {
+            $this->response = null;
+            $this->buildRequest($request);
             Response::init(new SystemResponse());
             $headers = ['Content-Type' => 'text/plain', 'Connection' => 'close'];
             $output = '';
-            $uri = \parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+            $uri = $_SERVER['REQUEST_URI'];
             if (\str_starts_with($uri, '/user/')) {
                 $output = \substr($uri, 6);
             }
             $headers['Content-Length'] = \strlen($output);
             Response::addHeaders($headers);
-            Response::addToBody($output);
+            Response::setBody($output);
             $this->response = Response::getInstance();
 
             throw new AsyncExitException();

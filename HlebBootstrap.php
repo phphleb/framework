@@ -1005,7 +1005,7 @@ class HlebBootstrap
     {
         if ($config && ($config['system']['classes.preload'] ?? null) === false) {
             $output = '';
-            $uri = \parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+            $uri = $_SERVER['REQUEST_URI'];
             \http_response_code(200);
             \header('Content-Type: text/plain');
             \header('Connection: close');
