@@ -476,7 +476,7 @@ class HlebAsyncBootstrap extends HlebBootstrap
         if ($config && $request && ($config['system']['classes.preload'] ?? null) === false) {
             $headers = ['Content-Type' => 'text/plain', 'Connection' => 'close'];
             $output = '';
-            $uri = $request->getUri()->getPath();
+            $uri = \parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
             if (\str_starts_with($uri, '/user/')) {
                 $output = \substr($uri, 6);
             }
