@@ -104,8 +104,6 @@ class HlebAsyncBootstrap extends HlebBootstrap
         \ob_start();
         try {
             try {
-                $this->switchInit($this->config, $request);
-
                 $this->loadProject($request);
 
                 $this->requestCompletion((string)\ob_get_contents());
@@ -465,32 +463,6 @@ class HlebAsyncBootstrap extends HlebBootstrap
         $_FILES = $req->file() ?: [];
 
         return [$body, $headers];
-    }
-
-    /**
-     * @inheritDoc
-     *
-     * @throws Exception
-     */
-    protected function switchInit(array $config, ?object $request = null): void
-    {
-        if ($config && $request && ($config['system']['classes.preload'] ?? null) === false) {
-            $this->response = null;
-            $this->buildRequest($request);
-            Response::init(new SystemResponse());
-            $headers = ['Content-Type' => 'text/plain', 'Connection' => 'close'];
-            $output = '';
-            $uri = $_SERVER['REQUEST_URI'];
-            if (\str_starts_with($uri, '/user/')) {
-                $output = \substr($uri, 6);
-            }
-            $headers['Content-Length'] = \strlen($output);
-            Response::addHeaders($headers);
-            Response::setBody($output);
-            $this->response = Response::getInstance();
-
-            throw new AsyncExitException();
-        }
     }
 
     /**
