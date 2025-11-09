@@ -83,6 +83,11 @@ jobs:
         run: |
           cd ./${{ env.tag }}
           composer require phphleb/tests --no-install
+          composer require phphleb/idnaconv --no-install
+          composer require phphleb/psr-adapter --no-install
+          composer require psr/container --no-install
+          composer require psr/log --no-install
+          composer require psr/simple-cache --no-install
           composer install --no-autoloader
 
       - name: Move installed libraries to work directory (Windows)
