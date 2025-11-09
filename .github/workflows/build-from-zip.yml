@@ -72,6 +72,15 @@ jobs:
           New-Item -ItemType Directory -Path '${{ env.tag }}' -Force
           Copy-Item -Path '${{ env.tag }}_work/composer.json' -Destination '${{ env.tag }}/composer.json'
 
+      - name: Create tag directory (Linux)
+        if: runner.os != 'Windows'
+        run: mkdir -p ./${{ env.tag }}
+
+      - name: Create tag directory (Windows)
+        if: runner.os == 'Windows'
+        run: New-Item -Path ".\${{ env.tag }}" -ItemType Directory -Force
+        shell: pwsh
+
       - name: Install dependencies
         run: |
           cd ./${{ env.tag }}
