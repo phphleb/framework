@@ -72,23 +72,16 @@ jobs:
           New-Item -ItemType Directory -Path '${{ env.tag }}' -Force
           Copy-Item -Path '${{ env.tag }}_work/composer.json' -Destination '${{ env.tag }}/composer.json'
 
-      - name: Copy composer.json to tag directory (Linux)
-        if: runner.os != 'Windows'
-        shell: bash
-        run: |
-          mkdir -p ${{ env.tag }}
-          cp ${{ env.tag }}_work/composer.json ${{ env.tag }}/composer.json
-
       - name: Install dependencies
         run: |
           cd ./${{ env.tag }}
-          composer require phphleb/tests --no-install
-          composer require phphleb/idnaconv --no-install
-          composer require phphleb/psr-adapter --no-install
-          composer require psr/container --no-install
-          composer require psr/log --no-install
-          composer require psr/simple-cache --no-install
-          composer install --no-autoloader
+          composer require phphleb/test-o
+          composer require phphleb/idnaconv
+          composer require phphleb/psr-adapter
+          composer require psr/container
+          composer require psr/log
+          composer require psr/simple-cache
+          composer require phphleb/tests
 
       - name: Move installed libraries to work directory (Windows)
         if: runner.os == 'Windows'
@@ -104,6 +97,8 @@ jobs:
               Copy-Item -Path $source -Destination $dest -Recurse -Force
             }
           }
+          Copy-Item -Path '${{ env.tag }}/vendor/autoload.php' -Destination '${{ env.tag }}_work/vendor/autoload.php' -Force
+          Copy-Item -Path '${{ env.tag }}/vendor/composer' -Destination '${{ env.tag }}_work/vendor/composer' -Recurse -Force
 
       - name: Move installed libraries to work directory (Linux)
         if: runner.os != 'Windows'
@@ -118,9 +113,8 @@ jobs:
           cp -r "$source" "$dest"
           fi
           done
-
-      - name: Composer dump-autoload
-        run: cd ./${{ env.tag }}_work && composer dump-autoload
+          cp '${{ env.tag }}/vendor/autoload.php' '${{ env.tag }}_work/vendor/autoload.php'
+          cp -r '${{ env.tag }}/vendor/composer' '${{ env.tag }}_work/vendor/composer'
 
       - name: Set strict mode
         run: php ./${{ env.tag }}_work/console reverse-strict-mode-feature --set
