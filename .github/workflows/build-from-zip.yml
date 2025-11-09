@@ -84,15 +84,79 @@ jobs:
       - name: Framework version
         run: php ./${{ env.tag }}/console --version
 
-      - name: Install dependencies
-        working-directory: ./${{ env.tag }}
-        run: |          
-          composer require phphleb/test-o --no-update && \
-          composer require phphleb/idnaconv --no-update && \
-          composer require phphleb/psr-adapter --no-update && \
-          composer require psr/container  --no-update && \
-          composer require psr/log --no-update && \
-          composer require psr/simple-cache  --no-update
+
+
+      - name: Clone phphleb/test-o (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/test-o.git ./vendor/phphleb/test-o
+
+      - name: Clone phphleb/test-o (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/test-o.git ./vendor/phphleb/test-o
+
+      - name: Clone phphleb/idnaconv (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/idnaconv.git ./vendor/phphleb/idnaconv
+
+      - name: Clone phphleb/idnaconv (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/idnaconv.git ./vendor/phphleb/idnaconv
+
+      - name: Clone phphleb/psr-adapter (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/psr-adapter.git ./vendor/phphleb/psr-adapter
+
+      - name: Clone phphleb/psr-adapter (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/psr-adapter.git ./vendor/phphleb/psr-adapter
+
+      - name: Clone psr/container (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/container.git ./vendor/psr/container
+
+      - name: Clone psr/container (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/container.git ./vendor/psr/container
+
+      - name: Clone psr/log (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/log.git ./vendor/psr/log
+
+      - name: Clone psr/log (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/log.git ./vendor/psr/log
+
+      - name: Clone psr/simple-cache (Windows)
+
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/simple-cache.git ./vendor/psr/simple-cache
+
+      - name: Clone psr/simple-cache (Linux)
+
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/simple-cache.git ./vendor/psr/simple-cache
 
       - name: Set strict mode
         run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
