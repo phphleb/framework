@@ -85,8 +85,8 @@ jobs:
         run: php ./${{ env.tag }}/console --version
 
       - name: Install dependencies
-        run: |
-          cd ./${{ env.tag }} && \
+        working-directory: ./${{ env.tag }}
+        run: |          
           composer require phphleb/test-o --no-update && \
           composer require phphleb/idnaconv --no-update && \
           composer require phphleb/psr-adapter --no-update && \
