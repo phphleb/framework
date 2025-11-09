@@ -99,8 +99,6 @@ jobs:
               Copy-Item -Path $source -Destination $dest -Recurse -Force
             }
           }
-          Copy-Item -Path '${{ env.tag }}/vendor/autoload.php' -Destination '${{ env.tag }}_work/vendor/autoload.php' -Force
-          Copy-Item -Path '${{ env.tag }}/vendor/composer' -Destination '${{ env.tag }}_work/vendor/composer' -Recurse -Force
 
       - name: Move installed libraries to work directory (Linux)
         if: runner.os != 'Windows'
@@ -115,8 +113,6 @@ jobs:
           cp -r "$source" "$dest"
           fi
           done
-          cp ${{ env.tag }}/vendor/autoload.php ${{ env.tag }}_work/vendor/autoload.php
-          cp -r ${{ env.tag }}/vendor/composer ${{ env.tag }}_work/vendor/composer
 
       - name: Composer dump-autoload
         run: cd ./${{ env.tag }}_work && composer dump-autoload
