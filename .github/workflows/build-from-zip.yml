@@ -82,7 +82,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd ./${{ env.tag }}
-          composer require phphleb/tests
+          composer require phphleb/tests --no-autoloader
 
       - name: Move installed libraries to work directory (Windows)
         if: runner.os == 'Windows'
