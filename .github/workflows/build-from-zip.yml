@@ -85,7 +85,14 @@ jobs:
         run: php ./${{ env.tag }}/console --version
 
       - name: Install dependencies
-        run: cd ./${{ env.tag }} && composer require phphleb/test-o --no-update && composer require phphleb/idnaconv --no-update && composer require phphleb/psr-adapter --no-update && composer update phphleb/psr-adapter --with-dependencies
+        run: |
+          cd ./${{ env.tag }} && \
+          composer require phphleb/test-o --no-update && \
+          composer require phphleb/idnaconv --no-update && \
+          composer require phphleb/psr-adapter --no-update && \
+          composer require psr/container  --no-update && \
+          composer require psr/log --no-update && \
+          composer require psr/simple-cache  --no-update
 
       - name: Set strict mode
         run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
