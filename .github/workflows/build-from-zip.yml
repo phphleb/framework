@@ -14,6 +14,7 @@ jobs:
       extensions: json, pdo
       tag: hleb2-php${{ matrix.php }}-${{ matrix.os }}
       archive_url: "https://github.com/phphleb/hleb/archive/refs/heads/master.zip"
+      tests_repo: "https://github.com/phphleb/tests.git"
 
     runs-on: ${{ matrix.os }}
 
@@ -70,12 +71,21 @@ jobs:
           unzip -q hleb2.zip
           mv hleb-master ${{ env.tag }}
 
+      - name: Clone forked tests repo (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cd ./${{ env.tag }} && git clone ${{ env.tests_repo }} ./vendor/phphleb/tests
+
+      - name: Clone forked tests repo (Linux)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: cd ./${{ env.tag }} && git clone ${{ env.tests_repo }} ./vendor/phphleb/tests
 
       - name: Framework version
         run: php ./${{ env.tag }}/console --version
 
-      - name: Install tests
-        run: cd ./${{ env.tag }} && composer require phphleb/tests
+      - name: Install test-o
+        run: cd ./${{ env.tag }} && composer require phphleb/test-o && composer require phphleb/idnaconv && composer require phphleb/psr-adapter
 
       - name: Set strict mode
         run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
