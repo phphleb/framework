@@ -84,8 +84,8 @@ jobs:
       - name: Framework version
         run: php ./${{ env.tag }}/console --version
 
-      - name: Install test-o
-        run: cd ./${{ env.tag }} && composer require phphleb/test-o && composer require phphleb/idnaconv && composer require phphleb/psr-adapter
+      - name: Install dependencies
+        run: cd ./${{ env.tag }} && composer require phphleb/test-o --no-update && composer require phphleb/idnaconv --no-update && composer require phphleb/psr-adapter --no-update && composer update phphleb/psr-adapter --with-dependencies
 
       - name: Set strict mode
         run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
