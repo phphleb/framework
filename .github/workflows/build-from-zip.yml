@@ -65,32 +65,17 @@ jobs:
           unzip -q hleb2.zip
           mv hleb-master ${{ env.tag }}_work
 
-      - name: Copy composer.json to tag directory (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path '${{ env.tag }}' -Force
-          Copy-Item -Path '${{ env.tag }}_work/composer.json' -Destination '${{ env.tag }}/composer.json'
-
-      - name: Create tag directory (Linux)
+      - name: Copy work directory (Linux)
         if: runner.os != 'Windows'
-        run: mkdir -p ./${{ env.tag }}
+        run: cp -r ./${{ env.tag }}_work ./${{ env.tag }}
 
-      - name: Create tag directory (Windows)
+      - name: Copy work directory (Windows)
         if: runner.os == 'Windows'
-        run: New-Item -Path ".\${{ env.tag }}" -ItemType Directory -Force
+        run: Copy-Item -Path ".\${{ env.tag }}_work" -Destination ".\${{ env.tag }}" -Recurse
         shell: pwsh
 
       - name: Install dependencies
-        run: |
-          cd ./${{ env.tag }}
-          composer require phphleb/test-o
-          composer require phphleb/idnaconv
-          composer require phphleb/psr-adapter
-          composer require psr/container
-          composer require psr/log
-          composer require psr/simple-cache
-          composer require phphleb/tests
+        run: cd ./${{ env.tag }} && composer require phphleb/tests
 
       - name: Move installed libraries to work directory (Windows)
         if: runner.os == 'Windows'
