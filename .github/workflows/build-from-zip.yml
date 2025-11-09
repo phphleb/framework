@@ -89,7 +89,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $libs = @('phphleb/test-o', 'phphleb/idnaconv', 'phphleb/psr-adapter', 'psr/container', 'psr/log', 'psr/simple-cache' 'phphleb/tests')
+          $libs = @('phphleb/test-o', 'phphleb/idnaconv', 'phphleb/psr-adapter', 'psr/container', 'psr/log', 'psr/simple-cache', 'phphleb/tests')
           foreach ($lib in $libs) {
             $source = "${{ env.tag }}/vendor/$lib"
             $dest = "${{ env.tag }}_work/vendor/$lib"
