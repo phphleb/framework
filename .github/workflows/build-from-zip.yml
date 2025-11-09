@@ -14,7 +14,6 @@ jobs:
       extensions: json, pdo
       tag: hleb2-php${{ matrix.php }}-${{ matrix.os }}
       archive_url: "https://github.com/phphleb/hleb/archive/refs/heads/master.zip"
-      tests_repo: "https://github.com/phphleb/tests.git"
 
     runs-on: ${{ matrix.os }}
 
@@ -43,133 +42,96 @@ jobs:
         run: php -v
 
       - name: Download framework archive (Windows)
-
         if: runner.os == 'Windows'
         shell: pwsh
         run: Invoke-WebRequest -Uri '${{ env.archive_url }}' -OutFile 'hleb2.zip'
 
       - name: Download framework archive (Linux)
-
         if: runner.os != 'Windows'
         shell: bash
         run: wget ${{ env.archive_url }} -O hleb2.zip
 
-
       - name: Unpack framework archive (Windows)
-
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           Expand-Archive -Path hleb2.zip -DestinationPath .
-          Rename-Item -Path hleb-master -NewName '${{ env.tag }}'
+          Rename-Item -Path hleb-master -NewName '${{ env.tag }}_work'
 
       - name: Unpack framework archive (Linux)
-
         if: runner.os != 'Windows'
         shell: bash
         run: |
           unzip -q hleb2.zip
-          mv hleb-master ${{ env.tag }}
+          mv hleb-master ${{ env.tag }}_work
 
-      - name: Clone forked tests repo (Windows)
+      - name: Copy composer.json to tag directory (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: cd ./${{ env.tag }} && git clone ${{ env.tests_repo }} ./vendor/phphleb/tests
+        run: |
+          New-Item -ItemType Directory -Path '${{ env.tag }}' -Force
+          Copy-Item -Path '${{ env.tag }}_work/composer.json' -Destination '${{ env.tag }}/composer.json'
 
-      - name: Clone forked tests repo (Linux)
+      - name: Copy composer.json to tag directory (Linux)
         if: runner.os != 'Windows'
         shell: bash
-        run: cd ./${{ env.tag }} && git clone ${{ env.tests_repo }} ./vendor/phphleb/tests
+        run: |
+          mkdir -p ${{ env.tag }}
+          cp ${{ env.tag }}_work/composer.json ${{ env.tag }}/composer.json
 
-      - name: Framework version
-        run: php ./${{ env.tag }}/console --version
+      - name: Install dependencies
+        run: |
+          cd ./${{ env.tag }}
+          composer require phphleb/tests
 
-
-
-      - name: Clone phphleb/test-o (Windows)
-
+      - name: Move installed libraries to work directory (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/test-o.git ./vendor/phphleb/test-o
+        run: |
+          $libs = @('phphleb/test-o', 'phphleb/idnaconv', 'phphleb/psr-adapter', 'psr/container', 'psr/log', 'psr/simple-cache')
+          foreach ($lib in $libs) {
+            $source = "${{ env.tag }}/vendor/$lib"
+            $dest = "${{ env.tag }}_work/vendor/$lib"
+            $destDir = Split-Path -Parent $dest
+            New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+            if (Test-Path $source) {
+              Copy-Item -Path $source -Destination $dest -Recurse -Force
+            }
+          }
+          Copy-Item -Path '${{ env.tag }}/vendor/autoload.php' -Destination '${{ env.tag }}_work/vendor/autoload.php' -Force
+          Copy-Item -Path '${{ env.tag }}/vendor/composer' -Destination '${{ env.tag }}_work/vendor/composer' -Recurse -Force
 
-      - name: Clone phphleb/test-o (Linux)
-
+      - name: Move installed libraries to work directory (Linux)
         if: runner.os != 'Windows'
         shell: bash
-        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/test-o.git ./vendor/phphleb/test-o
-
-      - name: Clone phphleb/idnaconv (Windows)
-
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/idnaconv.git ./vendor/phphleb/idnaconv
-
-      - name: Clone phphleb/idnaconv (Linux)
-
-        if: runner.os != 'Windows'
-        shell: bash
-        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/idnaconv.git ./vendor/phphleb/idnaconv
-
-      - name: Clone phphleb/psr-adapter (Windows)
-
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/psr-adapter.git ./vendor/phphleb/psr-adapter
-
-      - name: Clone phphleb/psr-adapter (Linux)
-
-        if: runner.os != 'Windows'
-        shell: bash
-        run: cd ./${{ env.tag }} && git clone https://github.com/phphleb/psr-adapter.git ./vendor/phphleb/psr-adapter
-
-      - name: Clone psr/container (Windows)
-
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/container.git ./vendor/psr/container
-
-      - name: Clone psr/container (Linux)
-
-        if: runner.os != 'Windows'
-        shell: bash
-        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/container.git ./vendor/psr/container
-
-      - name: Clone psr/log (Windows)
-
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/log.git ./vendor/psr/log
-
-      - name: Clone psr/log (Linux)
-
-        if: runner.os != 'Windows'
-        shell: bash
-        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/log.git ./vendor/psr/log
-
-      - name: Clone psr/simple-cache (Windows)
-
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/simple-cache.git ./vendor/psr/simple-cache
-
-      - name: Clone psr/simple-cache (Linux)
-
-        if: runner.os != 'Windows'
-        shell: bash
-        run: cd ./${{ env.tag }} && git clone https://github.com/php-fig/simple-cache.git ./vendor/psr/simple-cache
-
-      - name: Set strict mode
-        run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
-
-      - name: Code reduction check
-        run: php ./${{ env.tag }}/console clearing-comment-feature
+        run: |
+          libs=("phphleb/test-o" "phphleb/idnaconv" "phphleb/psr-adapter" "psr/container" "psr/log" "psr/simple-cache")
+          for lib in "${libs[@]}"; do
+          source="${{ env.tag }}/vendor/$lib"
+          dest="${{ env.tag }}_work/vendor/$lib"
+          if [ -d "$source" ]; then
+          mkdir -p "$(dirname "$dest")"
+          cp -r "$source" "$dest"
+          fi
+          done
+          cp ${{ env.tag }}/vendor/autoload.php ${{ env.tag }}_work/vendor/autoload.php
+          cp -r ${{ env.tag }}/vendor/composer ${{ env.tag }}_work/vendor/composer
 
       - name: Composer dump-autoload
-        run: cd ./${{ env.tag }} && composer dump-autoload
+        run: cd ./${{ env.tag }}_work && composer dump-autoload
+
+      - name: Set strict mode
+        run: php ./${{ env.tag }}_work/console reverse-strict-mode-feature --set
+
+      - name: Code reduction check
+        run: php ./${{ env.tag }}_work/console clearing-comment-feature
+
+      - name: Framework version
+        run: php ./${{ env.tag }}_work/console --version
 
       - name: Check autoloader
-        run: php ./${{ env.tag }}/console autoloader-support-feature
+        run: php ./${{ env.tag }}_work/console autoloader-support-feature
 
       - name: Run tests
-        working-directory: ./${{ env.tag }}
+        working-directory: ./${{ env.tag }}_work
         run: php ./vendor/phphleb/test-o/run ./vendor/phphleb/tests/
