@@ -164,6 +164,9 @@ jobs:
       - name: Code reduction check
         run: php ./${{ env.tag }}/console clearing-comment-feature
 
+      - name: Composer dump-autoload
+        run: cd ./${{ env.tag }} && composer dump-autoload
+
       - name: Check autoloader
         run: php ./${{ env.tag }}/console autoloader-support-feature
 
