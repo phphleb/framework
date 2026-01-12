@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Hleb\Init;
-
 use Hleb\Constructor\Data\SystemSettings;
 use Hleb\Static\Debug;
 use Hleb\Static\Path;
