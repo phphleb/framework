@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Hleb\Init;
+
 use Hleb\Constructor\Data\SystemSettings;
 use Hleb\Static\Debug;
 use Hleb\Static\Path;
@@ -21,7 +23,7 @@ final class Functions
             return false;
         }
         if ($files = SystemSettings::getValue('system', 'custom.function.files')) {
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 require Path::get('global') . DIRECTORY_SEPARATOR . \ltrim($file, '\\/');
             }
         }
@@ -288,6 +290,40 @@ final class Functions
             }
         }
 
+        if (!function_exists('array_first')) {
+            /**
+             * Returns the first value of the array without the pointer offset.
+             * Similar to array_first() in PHP 8.5
+             *
+             * Возвращает первое значение массива без смещения указателя.
+             * Аналогично array_first() в PHP 8.5
+             */
+            function array_first(array $array): mixed
+            {
+                if (empty($array)) {
+                    return null;
+                }
+                return $array[\array_key_first($array)];
+            }
+        }
+
+        if (!function_exists('array_last')) {
+            /**
+             * Returns the last value of the array without the pointer offset.
+             * Similar to array_last() in PHP 8.5
+             *
+             * Возвращает последнее значение массива без смещения указателя.
+             * Аналогично array_last() в PHP 8.5
+             */
+            function array_last()
+            {
+                if (empty($array)) {
+                    return null;
+                }
+                return $array[\array_key_last($array)];
+            }
+        }
+
         if (!function_exists('array_any')) {
             /**
              * Checks whether at least one array element matches a condition.
@@ -310,4 +346,5 @@ final class Functions
 
         return true;
     }
+
 }
