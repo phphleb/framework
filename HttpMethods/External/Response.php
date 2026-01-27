@@ -147,11 +147,14 @@ class Response
     {
         $items = [];
         foreach ($headers as $name => $value) {
-            if (\is_array($value)) {
-                $items[$this->normalizeHeaderName($name)] = $value;
-            } else {
-               $items[$this->normalizeHeaderName($name)] = [$value];
+            try {
+                $n = $this->normalizeHeaderName((string)$name);
+            } catch (\InvalidArgumentException) {
+                continue;
             }
+
+            $values = \is_array($value) ? $value : [$value];
+            $items[$n] = \array_map([$this, 'normalizeHeaderValue'], $values);
         }
         $this->headers = $items;
     }
@@ -165,7 +168,14 @@ class Response
      */
     public function setHeader(string $name, int|float|string $value, bool $replace = true): void
     {
-        $name = $this->normalizeHeaderName($name);
+        try {
+            $name = $this->normalizeHeaderName($name);
+        } catch (\InvalidArgumentException) {
+            return;
+        }
+
+        $value = $this->normalizeHeaderValue($value);
+
         if ($replace) {
             $this->headers[$name] = [$value];
             return;
@@ -183,7 +193,12 @@ class Response
      */
     public function getHeader(string $name): array
     {
-        $name = $this->normalizeHeaderName($name);
+        try {
+            $name = $this->normalizeHeaderName($name);
+        } catch (\InvalidArgumentException) {
+            return [];
+        }
+
         if (\array_key_exists($name, $this->headers)) {
             return $this->headers[$name];
         }
@@ -213,21 +228,44 @@ class Response
      */
     public function addHeaders(array $headers, bool $replace = true): void
     {
-        foreach($headers as $k => $val) {
+        foreach ($headers as $k => $val) {
             // If a value of the form ['name: value'] is received.
             // Если пришло значение вида ['название: значение'].
             if (\is_numeric($k)) {
-                $list = \explode(':', $val);
-                $name = \array_shift($list);
-                $headers[$name][] = \trim(\implode(':', $list));
+                if (!\is_string($val) || !\str_contains($val, ':')) {
+                    unset($headers[$k]);
+                    continue;
+                }
+
+                [$rawName, $rawValue] = \explode(':', $val, 2);
+
+                try {
+                    $name = $this->normalizeHeaderName(\trim($rawName));
+                } catch (\InvalidArgumentException) {
+                    unset($headers[$k]);
+                    continue;
+                }
+
+                $headers[$name][] = $this->normalizeHeaderValue(\trim($rawValue));
                 $headers[$name] = \array_unique($headers[$name]);
+                
+                // Do not process this numeric entry further.
+                unset($headers[$k]);
             }
         }
         foreach ($headers as $key => $value) {
             if (!\is_array($value)) {
                 $value = [$value];
             }
-            $name = $this->normalizeHeaderName($key);
+            
+            try {
+                $name = $this->normalizeHeaderName((string)$key);
+            } catch (\InvalidArgumentException) {
+                continue;
+            }
+
+            $value = \array_map([$this, 'normalizeHeaderValue'], $value);
+            
             if (isset($this->headers[$name])) {
                 $this->headers[$name] = \array_unique($replace ? $value : \array_merge($this->headers[$name], $value));
             } else {
@@ -331,15 +369,44 @@ class Response
     private function normalizeHeaderName(string $name): string
     {
         $name = \trim($name);
+        if ($name === '') {
+            throw new \InvalidArgumentException('Empty header name');
+        }
+
+        // RFC 7230 token + explicitly deny CR/LF.
+        if (\strpbrk($name, "\r\n") !== false) {
+            throw new \InvalidArgumentException('Invalid header name');
+        }
+
+        if (!\preg_match("/^[!#$%&'*+\\-.^_`|~0-9A-Za-z]+$/", $name)) {
+            throw new \InvalidArgumentException('Invalid header name');
+        }
+        
         $name = \str_replace('_', '-', \strtoupper($name));
         $parts = \explode('-', $name);
         foreach ($parts as &$part) {
-            if (\in_array($part, self::UPPERCASE)) {
+            if (\in_array($part, self::UPPERCASE, true)) {
                 continue;
             }
             $part = \ucwords(\strtolower($part));
         }
 
         return \implode('-', $parts);
+    }
+
+    private function normalizeHeaderValue(mixed $value): string
+    {
+        $value = (string)$value;
+        if ($value === '') {
+            return '';
+        }
+
+        // Remove CR/LF and other control chars to prevent response splitting.
+        $clean = \preg_replace('/[\x00-\x1F\x7F]+/', '', $value);
+        if ($clean === null) {
+            $clean = '';
+        }
+
+        return \trim($clean);
     }
 }
