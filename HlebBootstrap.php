@@ -660,10 +660,17 @@ class HlebBootstrap
         if ($server['REQUEST_METHOD'] === 'POST' && isset($post['_method']) && \is_string($post['_method'])) {
             $forced = \strtoupper($post['_method']);
             if (!$forced || $forced === 'POST') {
+            $forced = \strtoupper(\trim($post['_method']));
+            
+            // Invalid values are ignored to avoid exception-based DoS.
+            if ($forced === '' || $forced === 'POST') {
+                unset($post['_method']);
                 return null;
             }
-            if (!\in_array($forced, ['PUT', 'PATCH', 'DELETE'])) {
-                throw new RuntimeException('The `_method` value is incorrect.');
+            
+            if (!\in_array($forced, ['PUT', 'PATCH', 'DELETE'], true)) {
+                unset($post['_method']);
+                return null;
             }
             unset($post['_method']);
             $server['REQUEST_METHOD'] = $forced;
