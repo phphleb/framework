@@ -80,8 +80,7 @@ class WebConsole implements RollbackInterface
             $isCommand = \array_key_exists('command', $params);
             if ($isExit || $isCommand) {
                 if (!Csrf::validate(Csrf::discover())) {
-                    \http_response_code(403);
-                    exit;
+                    async_exit(httpStatus: 403);
                 }
                 if ($isExit) {
                     (new ExtremeIdentifier())->exit();
