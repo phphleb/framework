@@ -18,6 +18,16 @@ class Response
     ];
 
     private const UPPERCASE = ['MD5', 'MIME', 'TE', 'URI', 'WWW'];
+    
+    /**
+    * RFC 7230 token characters allowed in header field-name.
+    */
+    private const HEADER_NAME_CHARS = "!#$%&'*+-.^_`|~0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    
+    /**
+    * ASCII control chars (0x00–0x1F) + DEL (0x7F).
+    */
+    private const CONTROL_CHARS = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F\x7F";
 
     private array $body = [];
 
@@ -130,9 +140,11 @@ class Response
     public function getPrepareHeaders(): array
     {
         $result = [];
-        foreach ($this->headers as $name => $headers) {
-            $result[] = $name . ': ' . $headers;
-       }
+        foreach ($this->headers as $name => $values) {
+            foreach ((array)$values as $value) {
+                $result[] = $name . ': ' . $value;
+            }
+        }
         return $result;
     }
 
@@ -148,11 +160,11 @@ class Response
         $items = [];
         foreach ($headers as $name => $value) {
             try {
-                $n = $this->normalizeHeaderName((string)$name);
+                $n = $this->ensureValidHeaderName((string)$name);
             } catch (\InvalidArgumentException) {
                 continue;
             }
-
+            
             $values = \is_array($value) ? $value : [$value];
             $items[$n] = \array_map([$this, 'normalizeHeaderValue'], $values);
         }
@@ -169,13 +181,13 @@ class Response
     public function setHeader(string $name, int|float|string $value, bool $replace = true): void
     {
         try {
-            $name = $this->normalizeHeaderName($name);
+            $name = $this->ensureValidHeaderName($name);
         } catch (\InvalidArgumentException) {
             return;
         }
-
+        
         $value = $this->normalizeHeaderValue($value);
-
+        
         if ($replace) {
             $this->headers[$name] = [$value];
             return;
@@ -194,11 +206,11 @@ class Response
     public function getHeader(string $name): array
     {
         try {
-            $name = $this->normalizeHeaderName($name);
+            $name = $this->ensureValidHeaderName($name);
         } catch (\InvalidArgumentException) {
             return [];
         }
-
+        
         if (\array_key_exists($name, $this->headers)) {
             return $this->headers[$name];
         }
@@ -228,48 +240,48 @@ class Response
      */
     public function addHeaders(array $headers, bool $replace = true): void
     {
+        $parsed = [];
         foreach ($headers as $k => $val) {
             // If a value of the form ['name: value'] is received.
             // Если пришло значение вида ['название: значение'].
-            if (\is_numeric($k)) {
+            if (\is_int($k) || \ctype_digit((string)$k)) {
                 if (!\is_string($val) || !\str_contains($val, ':')) {
-                    unset($headers[$k]);
                     continue;
                 }
-
-                [$rawName, $rawValue] = \explode(':', $val, 2);
-
-                try {
-                    $name = $this->normalizeHeaderName(\trim($rawName));
-                } catch (\InvalidArgumentException) {
-                    unset($headers[$k]);
-                    continue;
-                }
-
-                $headers[$name][] = $this->normalizeHeaderValue(\trim($rawValue));
-                $headers[$name] = \array_unique($headers[$name]);
                 
-                // Do not process this numeric entry further.
-                unset($headers[$k]);
-            }
-        }
-        foreach ($headers as $key => $value) {
-            if (!\is_array($value)) {
-                $value = [$value];
-            }
-            
-            try {
-                $name = $this->normalizeHeaderName((string)$key);
-            } catch (\InvalidArgumentException) {
+                [$rawName, $rawValue] = \explode(':', $val, 2);
+                
+                try {
+                    $name = $this->ensureValidHeaderName(\trim($rawName));
+                } catch (\InvalidArgumentException) {
+                    continue;
+                }
+    
+                $parsed[$name][] = $this->normalizeHeaderValue(\trim($rawValue));
                 continue;
             }
 
-            $value = \array_map([$this, 'normalizeHeaderValue'], $value);
+            // If a value of the form ['Name' => value|[...]] is received.
+            // Если пришло значение вида ['Name' => value|[...]].
+            try {
+                $name = $this->ensureValidHeaderName((string)$k);
+            } catch (\InvalidArgumentException) {
+                continue;
+            }
             
-            if (isset($this->headers[$name])) {
-                $this->headers[$name] = \array_unique($replace ? $value : \array_merge($this->headers[$name], $value));
+            $values = \is_array($val) ? $val : [$val];
+            foreach ($values as $v) {
+                $parsed[$name][] = $this->normalizeHeaderValue($v);
+            }
+        }
+        // Apply to internal headers
+        foreach ($parsed as $name => $values) {
+            $values = \array_values(\array_unique($values));
+
+            if ($replace || !isset($this->headers[$name])) {
+                $this->headers[$name] = $values;
             } else {
-                $this->headers[$name] = \array_unique($value);
+                $this->headers[$name] = \array_values(\array_unique(\array_merge($this->headers[$name], $values)));
             }
         }
     }
@@ -361,36 +373,47 @@ class Response
         ];
     }
 
-    /**
-     * Standardizes the title for the heading.
-     *
-     * Стандартизирует название для заголовка.
-     */
-    private function normalizeHeaderName(string $name): string
+    private function isValidHeaderName(string $name): bool
     {
         $name = \trim($name);
         if ($name === '') {
-            throw new \InvalidArgumentException('Empty header name');
+            return false;
         }
+        
+        // RFC 7230 token whitelist
+        return \strspn($name, self::HEADER_NAME_CHARS) === \strlen($name);
+    }
 
-        // RFC 7230 token + explicitly deny CR/LF.
-        if (\strpbrk($name, "\r\n") !== false) {
-            throw new \InvalidArgumentException('Invalid header name');
-        }
-
-        if (!\preg_match("/^[!#$%&'*+\\-.^_`|~0-9A-Za-z]+$/", $name)) {
+    /**
+    * Validate + normalize header name before storing internally.
+    */
+    private function ensureValidHeaderName(string $name): string
+    {
+        if (!$this->isValidHeaderName($name)) {
             throw new \InvalidArgumentException('Invalid header name');
         }
         
+        return $this->normalizeHeaderName($name);
+    }
+
+    /**
+    * Standardizes the title for the heading.
+    */
+    private function normalizeHeaderName(string $name): string
+    {
+        $name = \trim($name);
+        
         $name = \str_replace('_', '-', \strtoupper($name));
         $parts = \explode('-', $name);
+        
         foreach ($parts as &$part) {
             if (\in_array($part, self::UPPERCASE, true)) {
                 continue;
             }
+        
             $part = \ucwords(\strtolower($part));
         }
-
+        
         return \implode('-', $parts);
     }
 
@@ -400,13 +423,22 @@ class Response
         if ($value === '') {
             return '';
         }
-
-        // Remove CR/LF and other control chars to prevent response splitting.
-        $clean = \preg_replace('/[\x00-\x1F\x7F]+/', '', $value);
-        if ($clean === null) {
-            $clean = '';
+        
+        if (\strcspn($value, self::CONTROL_CHARS) === \strlen($value)) {
+            return \trim($value);
         }
-
+        
+        // ASCII control chars (0x00–0x1F) + DEL (0x7F)
+        static $trans = null;
+        if ($trans === null) {
+            $trans = [];
+            for ($i = 0; $i < 32; $i++) {
+                $trans[\chr($i)] = '';
+            }
+            $trans[\chr(127)] = '';
+        }
+        
+        $clean = \strtr($value, $trans);
         return \trim($clean);
     }
 }
