@@ -439,14 +439,26 @@ class RouteFileManager
      */
     private function updateRounds(array $info): bool
     {
-        $update = static function ($i) {
-            empty($i['update_status']) || $i['update_status'] < \microtime(true) - 1;
-        };
-        while ($update($info)) {
+        // Soft wait to avoid route-cache stampede when another process is rebuilding the cache.
+        // This also prevents infinite loops if the updater crashes before resetting update_status.
+        $deadline = \microtime(true) + 2.0;
+
+        while (!empty($info['update_status'])) {
+            if (\microtime(true) >= $deadline) {
+                // Timeout reached: allow the current request to rebuild the route cache.
+                return true;
+            }
+
             \usleep(10000);
             $info = $this->getInfoFromCache();
+
+            if (!$info) {
+                // If cache info cannot be read, allow rebuild.
+                return true;
+            }
         }
-        return !empty($info['update_status']);
+        // Another process finished updating.
+        return false;
     }
 
     /**
