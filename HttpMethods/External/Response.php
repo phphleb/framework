@@ -150,23 +150,30 @@ class Response
 
     /**
      * Sets the headers (replacing the entire set) of the form
-     * ['name' => 'value'] or ['name' => ['value1', 'value2']].
+     * $headers = ['name' => 'value'] or $headers = ['name' => ['value1', 'value2']].
      *
      * Устанавливает заголовки (полностью заменяя весь набор) вида
-     * ['название' => 'значение'] или ['название' => ['значение1', 'значение2']].
+     * $headers = ['название' => 'значение'] или $headers = ['название' => ['значение1', 'значение2']].
      */
     public function replaceHeaders(array $headers): void
     {
         $items = [];
         foreach ($headers as $name => $value) {
-            try {
-                $n = $this->ensureValidHeaderName((string)$name);
-            } catch (\InvalidArgumentException) {
+            $n = $this->ensureValidHeaderName((string)$name);
+            if (\is_null($n)) {
                 continue;
             }
-            
-            $values = \is_array($value) ? $value : [$value];
-            $items[$n] = \array_map([$this, 'normalizeHeaderValue'], $values);
+
+            $values = (array)$value;
+            foreach($values as $k => &$val) {
+                $val = $this->ensureValidHeaderValue($val);
+                if (\is_null($val)) {
+                    unset($values[$k]);
+                }
+            }
+            if ($values) {
+                $items[$n] = \array_values($values);
+            }
         }
         $this->headers = $items;
     }
@@ -180,20 +187,22 @@ class Response
      */
     public function setHeader(string $name, int|float|string $value, bool $replace = true): void
     {
-        try {
-            $name = $this->ensureValidHeaderName($name);
-        } catch (\InvalidArgumentException) {
+        $name = $this->ensureValidHeaderName($name);
+        if (\is_null($name)) {
             return;
         }
         
-        $value = $this->normalizeHeaderValue($value);
+        $value = $this->ensureValidHeaderValue($value);
         
         if ($replace) {
             $this->headers[$name] = [$value];
             return;
         }
+        $key = \array_search($value, $this->headers[$name], true);
+        if ($key !== false) {
+            \array_splice($this->headers[$name], $key, 1);
+        }
         $this->headers[$name][] = $value;
-        $this->headers[$name] = \array_unique($this->headers[$name]);
     }
 
     /**
@@ -205,12 +214,8 @@ class Response
      */
     public function getHeader(string $name): array
     {
-        try {
-            $name = $this->ensureValidHeaderName($name);
-        } catch (\InvalidArgumentException) {
-            return [];
-        }
-        
+        $name = $this->normalizeHeaderName($name);
+
         if (\array_key_exists($name, $this->headers)) {
             return $this->headers[$name];
         }
@@ -244,44 +249,56 @@ class Response
         foreach ($headers as $k => $val) {
             // If a value of the form ['name: value'] is received.
             // Если пришло значение вида ['название: значение'].
-            if (\is_int($k) || \ctype_digit((string)$k)) {
+            if (\is_numeric($k)) {
                 if (!\is_string($val) || !\str_contains($val, ':')) {
                     continue;
                 }
                 
                 [$rawName, $rawValue] = \explode(':', $val, 2);
-                
-                try {
-                    $name = $this->ensureValidHeaderName(\trim($rawName));
-                } catch (\InvalidArgumentException) {
+
+                $name = $this->ensureValidHeaderName(\trim($rawName));
+                if (\is_null($name)) {
                     continue;
                 }
-    
-                $parsed[$name][] = $this->normalizeHeaderValue(\trim($rawValue));
+                $rawValue = $this->ensureValidHeaderValue(\trim($rawValue));
+                if (\is_null($rawValue)) {
+                    continue;
+                }
+                $parsed[$name][] = $rawValue;
                 continue;
             }
 
             // If a value of the form ['Name' => value|[...]] is received.
             // Если пришло значение вида ['Name' => value|[...]].
-            try {
-                $name = $this->ensureValidHeaderName((string)$k);
-            } catch (\InvalidArgumentException) {
+            $name = $this->ensureValidHeaderName((string)$k);
+            if (\is_null($name)) {
                 continue;
             }
-            
-            $values = \is_array($val) ? $val : [$val];
+
+            $values = (array)$val;
             foreach ($values as $v) {
-                $parsed[$name][] = $this->normalizeHeaderValue($v);
+                $v = $this->ensureValidHeaderValue($v);
+                if (\is_null($v)) {
+                    continue;
+                }
+                $parsed[$name][] = $v;
             }
         }
         // Apply to internal headers
         foreach ($parsed as $name => $values) {
-            $values = \array_values(\array_unique($values));
-
+            $values = \array_values($values);
+            if (!\count($values)) {
+                continue;
+            }
             if ($replace || !isset($this->headers[$name])) {
                 $this->headers[$name] = $values;
             } else {
-                $this->headers[$name] = \array_values(\array_unique(\array_merge($this->headers[$name], $values)));
+                foreach($this->headers[$name] as $key => $value) {
+                    if (\in_array($value, $values)) {
+                        unset($this->headers[$name][$key]);
+                    }
+                }
+                $this->headers[$name] = \array_values(\array_merge($this->headers[$name], $values));
             }
         }
     }
@@ -373,27 +390,21 @@ class Response
         ];
     }
 
-    private function isValidHeaderName(string $name): bool
-    {
-        $name = \trim($name);
-        if ($name === '') {
-            return false;
-        }
-        
-        // RFC 7230 token whitelist
-        return \strspn($name, self::HEADER_NAME_CHARS) === \strlen($name);
-    }
-
     /**
     * Validate + normalize header name before storing internally.
     */
-    private function ensureValidHeaderName(string $name): string
+    private function ensureValidHeaderName(string $name): ?string
     {
-        if (!$this->isValidHeaderName($name)) {
-            throw new \InvalidArgumentException('Invalid header name');
+        $name = \trim($name);
+        if ($name === '') {
+            return null;
+        }
+        // RFC 7230 token whitelist
+        if (\strspn($name, self::HEADER_NAME_CHARS) === \strlen($name)) {
+            return $this->normalizeHeaderName($name);
         }
         
-        return $this->normalizeHeaderName($name);
+        return null;
     }
 
     /**
@@ -417,7 +428,7 @@ class Response
         return \implode('-', $parts);
     }
 
-    private function normalizeHeaderValue(mixed $value): string
+    private function ensureValidHeaderValue(mixed $value): ?string
     {
         $value = (string)$value;
         if ($value === '') {
@@ -428,17 +439,6 @@ class Response
             return \trim($value);
         }
         
-        // ASCII control chars (0x00–0x1F) + DEL (0x7F)
-        static $trans = null;
-        if ($trans === null) {
-            $trans = [];
-            for ($i = 0; $i < 32; $i++) {
-                $trans[\chr($i)] = '';
-            }
-            $trans[\chr(127)] = '';
-        }
-        
-        $clean = \strtr($value, $trans);
-        return \trim($clean);
+        return null;
     }
 }
