@@ -427,7 +427,7 @@ class RouteFileManager
             return true;
         }
 
-        return $this->updateRounds($secondInfo);
+        return $this->updateRounds();
     }
 
     /**
@@ -437,7 +437,7 @@ class RouteFileManager
      *
      * @throws RouteColoredException
      */
-    private function updateRounds(array $info): bool
+    private function updateRounds(): bool
     {
         for ($i = 0; $i < 200; $i++) {
             \usleep(10000);
