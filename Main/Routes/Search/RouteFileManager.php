@@ -421,8 +421,8 @@ class RouteFileManager
             return true;
         }
 
-        // The update was not performed by another request.
-        // Обновление не было выполнено другим запросом.
+        // The update was not started by another request.
+        // Обновление не было начато другим запросом.
         if ($firstInfo['time'] === $secondInfo['time']) {
             return true;
         }
@@ -439,26 +439,19 @@ class RouteFileManager
      */
     private function updateRounds(array $info): bool
     {
-        // Soft wait to avoid route-cache stampede when another process is rebuilding the cache.
-        // This also prevents infinite loops if the updater crashes before resetting update_status.
-        $deadline = \microtime(true) + 2.0;
-
-        while (!empty($info['update_status'])) {
-            if (\microtime(true) >= $deadline) {
-                // Timeout reached: allow the current request to rebuild the route cache.
-                return true;
-            }
-
+        for ($i = 0; $i < 200; $i++) {
             \usleep(10000);
             $info = $this->getInfoFromCache();
-
             if (!$info) {
-                // If cache info cannot be read, allow rebuild.
                 return true;
             }
+            // The parallel process started has completed the update.
+            // Парралельно начатый процесс завершил обновление.
+            if (empty($info['update_status'])) {
+                return false;
+            }
         }
-        // Another process finished updating.
-        return false;
+        return true;
     }
 
     /**
