@@ -443,7 +443,11 @@ class RouteFileManager
             \usleep(10000);
             $info = $this->getInfoFromCache();
             if (!$info) {
-                return true;
+                \usleep(10000);
+                $info = $this->getInfoFromCache();
+                if (!$info) {
+                   return true;
+                }
             }
             // The parallel process started has completed the update.
             // Парралельно начатый процесс завершил обновление.
