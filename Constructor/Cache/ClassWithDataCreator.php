@@ -48,7 +48,7 @@ final class ClassWithDataCreator
     private function getClassCell(string $name, int|string $value, $type): string
     {
         if ($type === 'string') {
-            $value = "'$value'";
+            $value = \var_export($value, true);
         }
         if ($type === 'integer') {
             $type = 'int';
