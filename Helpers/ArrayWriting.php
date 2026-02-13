@@ -49,11 +49,11 @@ final class ArrayWriting
             } else if (\is_int($key)) {
                 $tag = "$key => ";
             } else {
-                $tag = \var_export((string)$key, true) . ' => ';
+                $tag = "'" . \preg_replace("/(?<!\\\\)'/", "\\'", (string)$key) . "' => ";
             }
 
             if (\is_string($value)) {
-                $value = \var_export($value, true);
+                $value = "'" . \preg_replace("/(?<!\\\\)'/", "\\'", $value) . "'";
             }
             if (\is_bool($value)) {
                 $value = $value ? 'true' : 'false';
