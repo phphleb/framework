@@ -54,6 +54,9 @@ jobs:
       - name: Install phpstan
         run: cd ./${{ env.tag }} && composer require phpstan/phpstan
 
+      - name: Run phpstan
+        run: php ./${{ env.tag }}/vendor/bin/phpstan analyse --configuration=./${{ env.tag }}/vendor/phphleb/framework/phpstan.neon
+
       - name: Set strict mode
         run: php ./${{ env.tag }}/console reverse-strict-mode-feature --set
 
@@ -66,5 +69,3 @@ jobs:
       - name: Run tests
         run: php ./${{ env.tag }}/vendor/phphleb/test-o/run ./vendor/phphleb/tests/
 
-      - name: Run phpstan
-        run: php ./${{ env.tag }}/vendor/bin/phpstan analyse --configuration=./${{ env.tag }}/vendor/phphleb/framework/phpstan.neon
