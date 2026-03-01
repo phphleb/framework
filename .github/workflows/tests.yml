@@ -67,4 +67,4 @@ jobs:
         run: php ./${{ env.tag }}/vendor/phphleb/test-o/run ./vendor/phphleb/tests/
 
       - name: Run phpstan
-        run: php ./${{ env.tag }}/vendor/bin/phpstan analyse --configuration=$(pwd)/vendor/phphleb/framework/phpstan.neon
+        run: php ./${{ env.tag }}/vendor/bin/phpstan analyse --configuration=./${{ env.tag }}/vendor/phphleb/framework/phpstan.neon
