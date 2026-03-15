@@ -3,3 +3,5 @@ parameters:
    paths:
        - Route
        - Main/Routes/Methods
+       - Init/Review/basic.php
+       - Constructor/Exceptions
