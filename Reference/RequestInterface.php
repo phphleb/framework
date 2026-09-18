@@ -219,6 +219,15 @@ interface RequestInterface
     public function acceptsJson(): bool;
 
     /**
+     * The format name derived from the Content-Type header.
+     * For example, it returns 'json' for 'application/json'.
+     *
+     * Имя формата, выведенное из заголовка Content-Type.
+     * Например, для 'application/json' вернет 'json'.
+     */
+    public function getContentTypeFormat(): ?string;
+
+    /**
      * Returns an array with data for uploaded files.
      * You can request one file by name, in this case
      * an array or object will be returned,

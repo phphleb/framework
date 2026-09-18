@@ -162,6 +162,37 @@ class RequestReference extends ContainerUniqueItem implements RequestInterface, 
 
     /** @inheritDoc */
     #[\Override]
+    public function getContentTypeFormat(): ?string
+    {
+        $contentType = $this->headerValue('Content-Type');
+        if ($contentType === null) {
+            return null;
+        }
+
+        $mime = \strtolower(\trim(\explode(';', $contentType, 2)[0]));
+
+        $map = [
+            'application/json'                  => 'json',
+            'application/x-json'                => 'json',
+            'text/json'                         => 'json',
+            'application/xml'                   => 'xml',
+            'text/xml'                          => 'xml',
+            'application/xhtml+xml'             => 'html',
+            'text/html'                         => 'html',
+            'application/x-www-form-urlencoded' => 'form',
+            'multipart/form-data'               => 'form',
+            'text/plain'                        => 'txt',
+            'application/javascript'            => 'js',
+            'application/x-javascript'          => 'js',
+            'text/javascript'                   => 'js',
+            'text/css'                          => 'css',
+        ];
+
+        return $map[$mime] ?? null;
+    }
+
+    /** @inheritDoc */
+    #[\Override]
     public function getFiles(string|int|null $name = null): null|array|object
     {
         return $name === null ? ($_FILES ?? []) : ($_FILES[$name] ?? null);
