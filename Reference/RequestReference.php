@@ -134,13 +134,30 @@ class RequestReference extends ContainerUniqueItem implements RequestInterface, 
     #[\Override]
     public function isAjax(): bool
     {
-        if (\strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest') {
+        $xrw = $this->headerValue('X-Requested-With');
+        if ($xrw !== null && \in_array(\strtolower($xrw), ['xmlhttprequest', 'fetch'], true)) {
             return true;
         }
-        if ($header = $this->getHeader('X-Requested-With')) {
-            return \strtolower((string)\end($header)) === 'xmlhttprequest';
-        }
-        return false;
+
+        return $this->isPjax();
+    }
+
+    /** @inheritDoc */
+    #[\Override]
+    public function isPjax(): bool
+    {
+        $pjax = $this->headerValue('X-PJAX');
+
+        return $pjax !== null && $pjax !== '';
+    }
+
+    /** @inheritDoc */
+    #[\Override]
+    public function acceptsJson(): bool
+    {
+        $accept = $this->headerValue('Accept');
+
+        return $accept !== null && \str_contains($accept, 'application/json');
     }
 
     /** @inheritDoc */
@@ -271,5 +288,19 @@ class RequestReference extends ContainerUniqueItem implements RequestInterface, 
     public static function rollback(): void
     {
         self::$cachedParams = [];
+    }
+
+    private function headerValue(string $name): ?string
+    {
+        $key = 'HTTP_' . \strtoupper(\str_replace('-', '_', $name));
+        if (isset($_SERVER[$key])) {
+            return (string)$_SERVER[$key];
+        }
+
+        if ($header = $this->getHeader($name)) {
+            return (string)\end($header);
+        }
+
+        return null;
     }
 }

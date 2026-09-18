@@ -193,12 +193,30 @@ interface RequestInterface
      * Determines if the request is sent as AJAX.
      * Some frontend libraries add an appropriate
      * identification label to X-Requested-With.
+     * Checks for a classic AJAX request characterized by:
+     * X-Requested-With: XMLHttpRequest | fetch, or X-PJAX
      *
      * Определяет, отправлен ли запрос как AJAX.
      * Некоторые frontend-библиотеки добавляют
      * идентификационную метку в X-Requested-With.
+     * Проверяет классический AJAX-запрос с признаками:
+     * X-Requested-With: XMLHttpRequest | fetch, либо X-PJAX
      */
     public function isAjax(): bool;
+
+    /**
+     * Checks for PJAX request (X-PJAX).
+     *
+     * Проверяет на PJAX-запрос (X-PJAX).
+     */
+    public function isPjax(): bool;
+
+    /**
+     * The client expects a JSON response (the Accept header contains application/json).
+     *
+     * Клиент ожидает JSON-ответ (Accept содержит application/json).
+     */
+    public function acceptsJson(): bool;
 
     /**
      * Returns an array with data for uploaded files.

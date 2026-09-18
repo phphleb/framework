@@ -288,10 +288,16 @@ final class Request extends BaseSingleton
 
     /**
      * Determines if the request is sent as AJAX.
-     * Some frontend libraries add this option.
+     * Some frontend libraries add an appropriate
+     * identification label to X-Requested-With.
+     * Checks for a classic AJAX request characterized by:
+     * X-Requested-With: XMLHttpRequest | fetch, or X-PJAX
      *
      * Определяет, отправлен ли запрос как AJAX.
-     * Некоторые frontend-библиотеки добавляют этот параметр.
+     * Некоторые frontend-библиотеки добавляют
+     * идентификационную метку в X-Requested-With.
+     * Проверяет классический AJAX-запрос с признаками:
+     * X-Requested-With: XMLHttpRequest | fetch, либо X-PJAX
      */
     public static function isAjax(): bool
     {
@@ -300,6 +306,34 @@ final class Request extends BaseSingleton
         }
 
         return BaseContainer::instance()->get(RequestInterface::class)->isAjax();
+    }
+
+    /**
+     * Checks for PJAX request (X-PJAX).
+     *
+     * Проверяет на PJAX-запрос (X-PJAX).
+     */
+    public static function isPjax(): bool
+    {
+        if (self::$replace) {
+            return self::$replace->isPjax();
+        }
+
+        return BaseContainer::instance()->get(RequestInterface::class)->isPjax();
+    }
+
+    /**
+     * The client expects a JSON response (the Accept header contains application/json).
+     *
+     * Клиент ожидает JSON-ответ (Accept содержит application/json).
+     */
+    public static function acceptsJson(): bool
+    {
+        if (self::$replace) {
+            return self::$replace->acceptsJson();
+        }
+
+        return BaseContainer::instance()->get(RequestInterface::class)->acceptsJson();
     }
 
     /**
