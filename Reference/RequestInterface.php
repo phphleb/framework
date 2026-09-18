@@ -228,6 +228,17 @@ interface RequestInterface
     public function getContentTypeFormat(): ?string;
 
     /**
+     * The request is made using SOAP.
+     * Indicators: Content-Type: application/soap+xml (SOAP 1.2)
+     * or the SOAPAction header (SOAP 1.1).
+     *
+     * Запрос выполнен с использованием SOAP.
+     * Признаки: Content-Type: application/soap+xml (SOAP 1.2)
+     * или заголовок SOAPAction (SOAP 1.1).
+     */
+    public function isSoap(): bool;
+
+    /**
      * Returns an array with data for uploaded files.
      * You can request one file by name, in this case
      * an array or object will be returned,

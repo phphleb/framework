@@ -191,6 +191,20 @@ class RequestReference extends ContainerUniqueItem implements RequestInterface, 
         return $map[$mime] ?? null;
     }
 
+    public function isSoap(): bool
+    {
+        $contentType = $this->headerValue('Content-Type');
+        if ($contentType !== null
+            && \str_contains(\strtolower($contentType), 'application/soap+xml')
+        ) {
+            return true;
+        }
+
+        $soapAction = $this->headerValue('SOAPAction');
+
+        return $soapAction !== null && $soapAction !== '';
+    }
+
     /** @inheritDoc */
     #[\Override]
     public function getFiles(string|int|null $name = null): null|array|object
