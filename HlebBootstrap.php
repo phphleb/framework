@@ -280,6 +280,7 @@ class HlebBootstrap
                 'show.request.id' => true,
                 'max.log.size' => 0,
                 'max.cache.size' => 0,
+                'cache.cleanup.only-cli' => false,
             ],
             'main' => [
                 'default.lang' => 'en',
@@ -543,6 +544,7 @@ class HlebBootstrap
                 'show.request.id' => ['boolean'],
                 'max.log.size' => ['integer'],
                 'max.cache.size' => ['integer'],
+                'cache.cleanup.only-cli' => ['boolean'],
                 'twig.options' => ['array'],
                 'twig.cache.inverted' => ['array'],
                 // 'config.debug' => ['boolean'], //hidden

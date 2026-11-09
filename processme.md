@@ -595,6 +595,9 @@ If there is a need to delete the cache by one of the keys, this can be done usin
 To have the framework automatically track the maximum cache size, you need to configure the 'max.cache.size' option in the /config/common.php file.
 The value is represented as an integer in megabytes.
 Due to the uneven distribution of cache in the files, this will be an approximate tracking of the maximum directory size for cache files.
+To move cache cleanup out of requests, set `cache.cleanup.only-cli` to `true` in the /config/common.php file.
+In this mode, requests do not remove expired cache files or enforce `max.cache.size`. An expired requested key is still treated as a cache miss, and a successful subsequent write replaces its files.
+Use `Cache::clearExpired()` to explicitly remove all expired cache files and enforce `max.cache.size`, for example from a console command.
 If caching is not occurring, make sure the 'app.cache.on' setting is enabled in the /config/common.php file; this is recommended to be disabled in debug mode.
 
 -------------------------
